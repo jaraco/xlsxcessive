@@ -92,8 +92,13 @@ class Formula(object):
         ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
         return '<f>%s</f>%s' % (self.source, ival)
 
-def save(workbook, filepath):
-    pack = OfficePackage(filepath)
+def save(workbook, filename, stream=None):
+    """Save the given workbook with the given filename.
+
+    If stream is provided and is a file-like object the .xlsx data
+    will be written there instead.
+    """
+    pack = OfficePackage(filename)
     wbp = WorkbookPart(pack, '/workbook.xml', data=str(workbook))
     pack.add(wbp)
     pack.relate(wbp)
@@ -103,5 +108,5 @@ def save(workbook, filepath):
         wsp = WorksheetPart(pack, "/worksheet%d.xml" % wid, data=str(worksheet))
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
-    pack.save()
+    pack.save(stream)
 
