@@ -105,17 +105,3 @@ def save(workbook, filepath):
         wbp.relate(wsp, id=worksheet.relation_id)
     pack.save()
 
-if __name__ == '__main__':
-    import sys
-    wb = Workbook()
-    sheet = wb.new_sheet('Test Sheet')
-    row1 = sheet.new_row(1)
-    row1.add_cell(Cell("A1", "Hello, World!"))
-    row1.add_cell(Cell("C1", 42.0))
-    row2 = sheet.new_row(2)
-    row2.add_cell(Cell("B2", "Foo"))
-    row2.add_cell(Cell("C2", 1))
-    row3 = sheet.new_row(3)
-    row3.add_cell(Cell("C3", Formula("SUM(C1, C2)", 43.0)))
-    save(wb, sys.argv[1])
-
