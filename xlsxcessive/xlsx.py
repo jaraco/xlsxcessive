@@ -69,14 +69,14 @@ class Row(object):
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 class Cell(object):
-    def __init__(self, reference, value=None):
+    def __init__(self, reference, value=None, format=None):
         self.reference = reference
         self.cell_type = None
         self._value = None
         if value is not None:
             self._set_value(value)
         self.row = None
-        self.format = None
+        self.format = format
 
     def _set_value(self, value):
         if isinstance(value, (int, float, long, decimal.Decimal)):
@@ -201,6 +201,7 @@ def save(workbook, filename, stream=None):
     pack.add(wbp)
     pack.relate(wbp)
 
+    ##print workbook.stylesheet
     stp = StylesPart(pack, '/styles.xml', data=str(workbook.stylesheet))
     pack.add(stp)
     wbp.relate(stp)
