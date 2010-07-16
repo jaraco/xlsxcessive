@@ -98,7 +98,7 @@ def save(workbook, filename, stream=None):
     If stream is provided and is a file-like object the .xlsx data
     will be written there instead.
     """
-    pack = OfficePackage(filename)
+    pack = OfficePackage()
     wbp = WorkbookPart(pack, '/workbook.xml', data=str(workbook))
     pack.add(wbp)
     pack.relate(wbp)
@@ -108,5 +108,5 @@ def save(workbook, filename, stream=None):
         wsp = WorksheetPart(pack, "/worksheet%d.xml" % wid, data=str(worksheet))
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
-    pack.save(stream)
+    pack.save(stream or filename)
 
