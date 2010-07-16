@@ -16,3 +16,12 @@ class WorksheetPart(Part):
     rel_type = \
             ("http://schemas.openxmlformats.org/officeDocument/2006/"
             "relationships/worksheet")
+
+class StylesPart(Part):
+    content_type = \
+        ("application/vnd.openxmlformats-officedocument."
+        "spreadsheetml.styles+xml")
+    
+    rel_type = \
+            ("http://schemas.openxmlformats.org/officeDocument/2006/"
+            "relationships/styles")

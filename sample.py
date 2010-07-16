@@ -23,21 +23,26 @@ wb = Workbook()
 sheet = wb.new_sheet('Test Sheet')
 
 # the API supports adding rows
-row1 = sheet.new_row(1)
+row1 = sheet.row(1)
 
 # rows support adding cells - cells can currently store strings, numbers
 # and formulas.
-row1.add_cell(Cell("A1", "Hello, World!"))
-row1.add_cell(Cell("C1", 42.0))
+row1.cell("A1", "Hello, World!")
+row1.cell("C1", 42.0)
 
 # adding rows is easy
-row2 = sheet.new_row(2)
-row2.add_cell(Cell("B2", "Foo"))
-row2.add_cell(Cell("C2", 1))
+row2 = sheet.row(2)
+row2.cell("B2", "Foo")
+row2.cell("C2", 1)
 
-row3 = sheet.new_row(3)
+row3 = sheet.row(3)
 # formulas are written as strings and can have default values
-row3.add_cell(Cell("C3", Formula("SUM(C1, C2)", 43.0)))
+c3 = row3.cell("C3", Formula("SUM(C1, C2)", 43.0))
+
+bigfont = wb.stylesheet.new_format()
+bigfont.font(size=24)
+
+c3.format = bigfont
 
 save(wb, sys.argv[1], stream)
 
