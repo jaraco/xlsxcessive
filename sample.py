@@ -16,7 +16,7 @@ stream = None
 if sys.argv[1] == '-':
     stream = sys.stdout
 
-from xlsxcessive.xlsx import Workbook, Cell, Formula, save
+from xlsxcessive.xlsx import Workbook, Cell, Formula, Font, save
 
 wb = Workbook()
 
@@ -26,12 +26,16 @@ sheet = wb.new_sheet('Test Sheet')
 bigfont = wb.stylesheet.new_format()
 bigfont.font(size=24)
 
+# another shared font style
+boldfont = wb.stylesheet.new_format()
+boldfont.font(bold=True)
+
 # the API supports adding rows
 row1 = sheet.row(1)
 
 # rows support adding cells - cells can currently store strings, numbers
 # and formulas.
-row1.cell("A1", "Hello, World!")
+row1.cell("A1", "Hello, World!", format=boldfont)
 row1.cell("C1", 42.0, format=bigfont)
 
 # adding rows is easy

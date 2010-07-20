@@ -103,14 +103,13 @@ class Cell(object):
             return str(self.value)
 
     def __str__(self):
-        data = (self.reference, self.cell_type, self._format_value())
         attrs = [
             'r="%s"' % self.reference,
             't="%s"' % self.cell_type,
         ]
         if self.format:
             attrs.append('s="%d"' % self.format.index)
-        return '<c %s>%s</c>' % (" ".join(attrs), data)
+        return '<c %s>%s</c>' % (" ".join(attrs), self._format_value())
 
 
 class Formula(object):
@@ -128,6 +127,9 @@ class Stylesheet(object):
         self.workbook = workbook
         self.fonts = []
         self.formats = []
+        # Initialize some defaults that are required by Excel ...
+        self.new_format()
+        self.font()
 
     def font(self, **params):
         font = Font(**params)
@@ -173,22 +175,21 @@ class Format(object):
         return '<xf %s/>' % (" ".join(attrs))
 
 class Font(object):
-    def __init__(self, size=10, name="Times New Roman", family=1, bold=False):
-        self.size = size
-        self.name = name
-        self.family = family
-        self.bold = bold
+    def __init__(self, **params):
+        self.size = params.get('size')
+        self.name = params.get('name')
+        self.family = params.get('family')
+        self.bold = params.get('bold')
         self.index = None
 
     def __str__(self):
         elems = [
-            '<sz val="%d"/>' % self.size,
-            '<name val="%s"/>' % self.name,
-            '<family val="%d"/>' % self.family,
+            '<sz val="%d"/>' % self.size if self.size else '',
+            '<name val="%s"/>' % self.name if self.name else '',
+            '<family val="%d"/>' % self.family if self.family else '',
+            '<b/>' if self.bold else '',
         ]
-        if self.bold:
-            elems.append('<b/>')
-        return '<font>%s</font>' % (" ".join(elems))
+        return '<font>%s</font>' % (" ".join(filter(None, elems)))
 
 def save(workbook, filename, stream=None):
     """Save the given workbook with the given filename.
@@ -209,6 +210,8 @@ def save(workbook, filename, stream=None):
     for i, worksheet in enumerate(workbook.sheets):
         wid = i + 1
         wsp = WorksheetPart(pack, "/worksheet%d.xml" % wid, data=str(worksheet))
+        ##print '------'
+        ##print worksheet
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
     pack.save(stream or filename)
