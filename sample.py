@@ -1,22 +1,6 @@
 """Just a simple example of XlsXcessive API usage."""
 
-import os
-import sys
-
-if len(sys.argv) == 1:
-    print "USAGE: python sample.py NEWFILEPATH"
-    print "Writes a sample .xlsx file to NEWFILEPATH"
-    raise SystemExit(1)
-
-if os.path.exists(sys.argv[1]):
-    print "Aborted. File %s already exists." % sys.argv[1]
-    raise SystemExit(1)
-
-stream = None
-if sys.argv[1] == '-':
-    stream = sys.stdout
-
-from xlsxcessive.xlsx import Workbook, save
+from xlsxcessive.xlsx import Workbook
 
 wb = Workbook()
 
@@ -54,5 +38,24 @@ sheet.cell('D1', 12)
 sheet.cell('D2', 12)
 sheet.cell('D3', shared_formula.share())
 
-save(wb, sys.argv[1], stream)
 
+if __name__ == '__main__':
+    import os
+    import sys
+    from xlsxcessive.xlsx import save
+
+    if len(sys.argv) == 1:
+        print "USAGE: python sample.py NEWFILEPATH"
+        print "Writes a sample .xlsx file to NEWFILEPATH"
+        raise SystemExit(1)
+
+    if os.path.exists(sys.argv[1]):
+        print "Aborted. File %s already exists." % sys.argv[1]
+        raise SystemExit(1)
+
+    stream = None
+    if sys.argv[1] == '-':
+        stream = sys.stdout
+
+    # wb is the Workbook created above
+    save(wb, sys.argv[1], stream)
