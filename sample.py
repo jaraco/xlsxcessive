@@ -16,7 +16,7 @@ stream = None
 if sys.argv[1] == '-':
     stream = sys.stdout
 
-from xlsxcessive.xlsx import Workbook, Cell, Formula, Font, save
+from xlsxcessive.xlsx import Workbook, save
 
 wb = Workbook()
 
@@ -43,9 +43,16 @@ row2 = sheet.row(2)
 row2.cell("B2", "Foo")
 row2.cell("C2", 1, format=bigfont)
 
-row3 = sheet.row(3)
 # formulas are written as strings and can have default values
-row3.cell("C3", Formula("SUM(C1, C2)", 43.0), format=bigfont)
+shared_formula = sheet.formula("SUM(C1, C2)", 43.0, shared=True)
+
+row3 = sheet.row(3)
+row3.cell("C3", shared_formula, format=bigfont)
+
+# you can work with cells directly on the sheet
+sheet.cell('D1', 12)
+sheet.cell('D2', 12)
+sheet.cell('D3', shared_formula.share())
 
 save(wb, sys.argv[1], stream)
 

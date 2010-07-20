@@ -31,6 +31,7 @@ class Worksheet(object):
         self.ref = markup.worksheet_ref % self.__dict__
         self.rows = []
         self.row_map = {}
+        self.formulas = []
 
     def row(self, number):
         if number in self.row_map:
@@ -42,9 +43,15 @@ class Worksheet(object):
 
     def cell(self, ref, *args, **params):
         rowidx = int(ref[1])
-        row = self.row(number)
+        row = self.row(rowidx)
         return row.cell(ref, *args, **params)
 
+    def formula(self, *args, **params):
+        f = Formula(*args, **params)
+        f.index = len(self.formulas)
+        self.formulas.append(f)
+        return f
+        
     def __str__(self):
         rows = ''.join(str(row) for row in self.rows)
         return markup.worksheet % {'rows':rows}
@@ -85,6 +92,7 @@ class Cell(object):
             self.cell_type = "inlineStr"
         elif isinstance(value, Formula):
             self.cell_type = 'str'
+            value.add_ref(self)
         else:
             raise ValueError("Unsupported cell value: %r" % value)
         self._value = value
@@ -113,13 +121,47 @@ class Cell(object):
 
 
 class Formula(object):
-    def __init__(self, source, initial_value=None):
+    def __init__(self, source, initial_value=None, shared=False, master=None):
         self.source = source
         self.initial_value = initial_value
+        self.shared = shared
+        self.master = master
+        self.index = None
+        self.children = []
+        self._ref_str = ''
+
+    def add_ref(self, cell):
+        if self.shared:
+            if not self.master:
+                # Formulas without a master are masters themselves
+                self.children.append(cell.reference)
+            else:
+                # Append the cell ref to the master's list of children
+                self.master.children.append(cell.reference)
+
+    def share(self):
+        return Formula(None, shared=True, master=self)
+
+    @property
+    def _refs(self):
+        if self.shared and not self.master and not self._ref_str:
+            sc = sorted(self.children)
+            low, high = sc[0], sc[-1]
+            self._ref_str = "%s:%s" % (low, high)
+        return self._ref_str
 
     def __str__(self):
+        if self.master is not None:
+            return '<f t="shared" si="%s" />' % self.master.index
+        attrs = filter(None, [
+            't="shared"' if self.shared else '',
+            'ref="%s"' % self._refs if self._refs else '',
+            'si="%d"' % self.master.index if self.master else '',
+            'si="%d"' % self.index if (self.shared and not self.master) else '',
+        ])
+        sattrs = " %s" % (" ".join(attrs)) if attrs else ''
         ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
-        return '<f>%s</f>%s' % (self.source, ival)
+        return '<f %s>%s</f>%s' % (sattrs, self.source, ival)
 
 
 class Stylesheet(object):
