@@ -1,0 +1,9 @@
+syntax: glob
+
+temp/*
+env/*
+*.egg-info
+*.pyc
+*.swp
+*.orig
+*~
