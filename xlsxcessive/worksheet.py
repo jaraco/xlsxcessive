@@ -1,4 +1,6 @@
 import decimal
+import string
+
 from xlsxcessive import markup
 
 
@@ -21,10 +23,11 @@ class Worksheet(object):
         self.row_map[number] = row
         return row
 
-    def cell(self, ref, *args, **params):
-        rowidx = int(ref[1])
+    def cell(self, *args, **params):
+        cell = Cell(*args, **params)
+        rowidx = int(cell.reference[-1])
         row = self.row(rowidx)
-        return row.cell(ref, *args, **params)
+        return row.cell(*args, **params)
 
     def formula(self, *args, **params):
         f = Formula(*args, **params)
@@ -43,12 +46,12 @@ class Row(object):
         self.cells = []
         self.cell_map = {}
 
-    def cell(self, ref, *args, **params):
-        if ref in self.cell_map:
-            return self.cell_map[ref]
-        cell = Cell(ref, *args, **params)
+    def cell(self, *args, **params):
+        cell = Cell(*args, **params)
+        if cell.reference in self.cell_map:
+            return self.cell_map[cell.reference]
         self.cells.append(cell)
-        self.cell_map[ref] = cell
+        self.cell_map[cell.reference] = cell
         return cell
 
     def __str__(self):
@@ -56,14 +59,23 @@ class Row(object):
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 class Cell(object):
-    def __init__(self, reference, value=None, format=None):
-        self.reference = reference
+    def __init__(self, reference=None, value=None, coords=None, format=None):
+        self._reference = reference
         self.cell_type = None
         self._value = None
         if value is not None:
             self._set_value(value)
         self.row = None
         self.format = format
+        self._coords = coords
+
+    @classmethod
+    def from_reference(cls, ref):
+        return cls(reference=ref)
+
+    @classmethod
+    def from_coords(cls, coords):
+        return cls(coords=coords)
 
     def _set_value(self, value):
         if isinstance(value, (int, float, long, decimal.Decimal)):
@@ -99,6 +111,47 @@ class Cell(object):
             attrs.append('s="%d"' % self.format.index)
         return '<c %s>%s</c>' % (" ".join(attrs), self._format_value())
 
+    @property
+    def reference(self):
+        if self._reference:
+            return self._reference
+        if self._coords:
+            return self._coords_to_a1()
+
+    @property
+    def coords(self):
+        if self._coords:
+            return self.coords
+        if self._reference:
+            return self._a1_to_coords()
+
+    def _coords_to_a1(self):
+        a1_col = []
+        base = self._coords[1]
+        mod = 0
+        while True:
+            base, rem = divmod(base, 26)
+            a1_col.append(string.ascii_uppercase[rem-mod])
+            if not base:
+                break
+            mod = 1
+        return "%s%d" % ("".join(reversed(a1_col)), self._coords[0] + 1)
+
+    def _a1_to_coords(self):
+        def _p():
+            i = 0
+            while True:
+                yield 26 ** i
+                i += 1
+        row = int(''.join(filter(str.isdigit, self._reference))) - 1
+        col_ref = ''.join(filter(str.isupper, self._reference))
+        col = 0
+        mod = 0
+        for p, letter in zip(_p(), reversed(col_ref)):
+            charval = string.ascii_uppercase.index(letter)
+            col += (p  * (charval + mod))
+            mod = 1
+        return row, col
 
 class Formula(object):
     def __init__(self, source, initial_value=None, shared=False, master=None):
