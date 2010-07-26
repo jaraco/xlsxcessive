@@ -48,6 +48,9 @@ for rowidx in xrange(10,15):
     for colidx in xrange(10, 16, 2):
         sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
+# set column widths
+sheet.col(1, width=14)
+
 if __name__ == '__main__':
     import os
     import sys

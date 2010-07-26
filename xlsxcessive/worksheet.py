@@ -14,6 +14,8 @@ class Worksheet(object):
         self.rows = []
         self.row_map = {}
         self.formulas = []
+        # for settings that apply to entire columns
+        self.cols = []
 
     def row(self, number):
         if number in self.row_map:
@@ -36,9 +38,22 @@ class Worksheet(object):
         self.formulas.append(f)
         return f
         
+    def col(self, *args, **params):
+        c = Column(self, *args, **params)
+        self.cols.append(c)
+        return c
+
     def __str__(self):
         rows = ''.join(str(row) for row in self.rows)
-        return markup.worksheet % {'rows':rows}
+        if self.cols:
+            cols_ = ''.join(str(col) for col in self.cols)
+            cols = '<cols>%s</cols>' % cols_
+        else:
+            cols = ''
+        return markup.worksheet % {
+            'rows':rows,
+            'cols':cols,
+        }
 
 class Row(object):
     def __init__(self, sheet, number):
@@ -62,6 +77,24 @@ class Row(object):
     def __str__(self):
         cells = ''.join(str(c) for c in self.cells)
         return '<row r="%s">%s</row>' % (self.number, cells)
+
+class Column(object):
+    def __init__(self, worksheet, number=None, index=None, width=None):
+        if index is not None:
+            self.index = index
+            self.number = index + 1
+        elif number is not None:
+            self.number = number
+            self.index = number - 1
+        else:
+            raise ValueError("One of number or index must be supplied.")
+        self.width = width
+
+    def __str__(self):
+        if self.width is not None:
+            fmt = '<col min="%d" max="%d" width="%s" />'
+            return fmt % (self.number, self.number, self.width)
+        return ''
 
 class Cell(object):
     def __init__(self, reference=None, value=None, coords=None, format=None):
