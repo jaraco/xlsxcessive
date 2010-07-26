@@ -44,15 +44,28 @@ class Worksheet(object):
         return c
 
     def __str__(self):
-        rows = ''.join(str(row) for row in self.rows)
+        merges = []
+        rows = []
+        for row in self.rows:
+            rows.append(str(row))
+            merges.extend(row.merge_cells)
+        rows = ''.join(rows)
         if self.cols:
             cols_ = ''.join(str(col) for col in self.cols)
             cols = '<cols>%s</cols>' % cols_
         else:
             cols = ''
+        if merges:
+            merge_elems = []
+            for merge_range in merges:
+                merge_elems.append('<mergeCell ref="%s" />' % merge_range)
+            merge_cells = '<mergeCells>%s</mergeCells>' % "".join(merge_elems)
+        else:
+            merge_cells = ''
         return markup.worksheet % {
             'rows':rows,
             'cols':cols,
+            'merge_cells': merge_cells,
         }
 
 class Row(object):
@@ -61,6 +74,9 @@ class Row(object):
         self.number = number
         self.cells = []
         self.cell_map = {}
+
+        # populated during rendering with references of merge cells
+        self.merge_cells = []
 
     def cell(self, *args, **params):
         cell = Cell(*args, **params)
@@ -75,7 +91,12 @@ class Row(object):
         self.cell_map[cell.reference] = cell
 
     def __str__(self):
-        cells = ''.join(str(c) for c in self.cells)
+        cells = []
+        for c in self.cells:
+            cells.append(str(c))
+            if c.merge_range:
+                self.merge_cells.append(c.merge_range)
+        cells = ''.join(cells)
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 class Column(object):
@@ -106,6 +127,7 @@ class Cell(object):
             self._set_value(value)
         self.row = None
         self.format = format
+        self.merge_range = None
 
     @classmethod
     def from_reference(cls, ref):
@@ -114,6 +136,9 @@ class Cell(object):
     @classmethod
     def from_coords(cls, coords):
         return cls(coords=coords)
+
+    def merge(self, other):
+        self.merge_range = "%s:%s" % (self.reference, other.reference)
 
     def _set_value(self, value):
         if isinstance(value, (int, float, long, decimal.Decimal)):

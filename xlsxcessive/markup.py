@@ -14,6 +14,7 @@ worksheet = """\
   <sheetData>
     %(rows)s
   </sheetData>
+  %(merge_cells)s
 </worksheet>
 """
 

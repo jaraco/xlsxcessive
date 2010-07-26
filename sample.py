@@ -1,6 +1,7 @@
 """Just a simple example of XlsXcessive API usage."""
 
 from xlsxcessive.xlsx import Workbook
+from xlsxcessive.worksheet import Cell
 
 wb = Workbook()
 
@@ -19,8 +20,12 @@ row1 = sheet.row(1)
 
 # rows support adding cells - cells can currently store strings, numbers
 # and formulas.
-row1.cell("A1", "Hello, World!", format=boldfont)
+a1 = row1.cell("A1", "Hello, World!", format=boldfont)
 row1.cell("C1", 42.0, format=bigfont)
+
+# cells can be merged with other cells - there is no checking on invalid merges
+# though. merge at your own risk!
+a1.merge(Cell('B1'))
 
 # adding rows is easy
 row2 = sheet.row(2)
@@ -49,7 +54,7 @@ for rowidx in xrange(5,10):
         sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
 # set column widths
-sheet.col(1, width=14)
+sheet.col(2, width=5)
 
 if __name__ == '__main__':
     import os
