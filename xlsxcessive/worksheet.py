@@ -25,9 +25,10 @@ class Worksheet(object):
 
     def cell(self, *args, **params):
         cell = Cell(*args, **params)
-        rowidx = int(cell.reference[-1])
-        row = self.row(rowidx)
-        return row.cell(*args, **params)
+        rowidx = int(cell.coords[0])
+        row = self.row(rowidx + 1)
+        row.add_cell(cell)
+        return cell
 
     def formula(self, *args, **params):
         f = Formula(*args, **params)
@@ -50,9 +51,13 @@ class Row(object):
         cell = Cell(*args, **params)
         if cell.reference in self.cell_map:
             return self.cell_map[cell.reference]
+        cell.coords = (self.number-1, len(self.cells))
+        self.add_cell(cell)
+        return cell
+
+    def add_cell(self, cell):
         self.cells.append(cell)
         self.cell_map[cell.reference] = cell
-        return cell
 
     def __str__(self):
         cells = ''.join(str(c) for c in self.cells)
@@ -61,13 +66,13 @@ class Row(object):
 class Cell(object):
     def __init__(self, reference=None, value=None, coords=None, format=None):
         self._reference = reference
+        self._coords = coords
         self.cell_type = None
         self._value = None
         if value is not None:
             self._set_value(value)
         self.row = None
         self.format = format
-        self._coords = coords
 
     @classmethod
     def from_reference(cls, ref):
@@ -118,12 +123,16 @@ class Cell(object):
         if self._coords:
             return self._coords_to_a1()
 
-    @property
-    def coords(self):
-        if self._coords:
-            return self.coords
-        if self._reference:
-            return self._a1_to_coords()
+    class coords(object):
+        def __get__(self, instance, other):
+            if instance._coords:
+                return instance._coords
+            if instance._reference:
+                return instance._a1_to_coords()
+
+        def __set__(self, instance, value):
+            instance._coords = value
+    coords = coords()
 
     def _coords_to_a1(self):
         a1_col = []

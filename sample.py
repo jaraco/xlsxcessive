@@ -38,6 +38,10 @@ sheet.cell('D1', 12)
 sheet.cell('D2', 12)
 sheet.cell('D3', shared_formula.share())
 
+# and directly via row and column indicies
+sheet.cell(coords=(0, 4), value=40)
+sheet.cell(coords=(1, 4), value=2)
+sheet.cell(coords=(2, 4), value=shared_formula.share())
 
 if __name__ == '__main__':
     import os
