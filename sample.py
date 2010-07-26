@@ -43,6 +43,11 @@ sheet.cell(coords=(0, 4), value=40)
 sheet.cell(coords=(1, 4), value=2)
 sheet.cell(coords=(2, 4), value=shared_formula.share())
 
+# iteratively adding data is easy now
+for rowidx in xrange(10,15):
+    for colidx in xrange(10, 16, 2):
+        sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
+
 if __name__ == '__main__':
     import os
     import sys
