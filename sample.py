@@ -44,8 +44,8 @@ sheet.cell(coords=(1, 4), value=2)
 sheet.cell(coords=(2, 4), value=shared_formula.share())
 
 # iteratively adding data is easy now
-for rowidx in xrange(10,15):
-    for colidx in xrange(10, 16, 2):
+for rowidx in xrange(5,10):
+    for colidx in xrange(5, 11, 2):
         sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
 # set column widths
