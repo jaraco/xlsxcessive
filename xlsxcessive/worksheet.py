@@ -125,7 +125,6 @@ class Cell(object):
         self._value = None
         if value is not None:
             self._set_value(value)
-        self.row = None
         self.format = format
         self.merge_range = None
 
