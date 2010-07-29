@@ -1,4 +1,5 @@
 import decimal
+import operator
 import string
 
 from xlsxcessive import markup
