@@ -46,7 +46,12 @@ class Worksheet(object):
     def __str__(self):
         merges = []
         rows = []
+        # Sort to put the rows and cells in the correct order - it
+        # seems like this matters to Excel (though Open Office doesn't
+        # care).
+        self.rows.sort(key=operator.attrgetter('number'))
         for row in self.rows:
+            row.cells.sort(key=operator.attrgetter('reference'))
             rows.append(str(row))
             merges.extend(row.merge_cells)
         rows = ''.join(rows)
