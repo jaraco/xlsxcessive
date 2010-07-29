@@ -52,7 +52,11 @@ class Worksheet(object):
         # care).
         self.rows.sort(key=operator.attrgetter('number'))
         for row in self.rows:
+            # First sort the keys alphanumerically
             row.cells.sort(key=operator.attrgetter('reference'))
+            # Then by length to get the correct sort order for A1 notation
+            # where AA1 > Z1.
+            row.cells.sort(key=lambda c: len(c.reference))
             rows.append(str(row))
             merges.extend(row.merge_cells)
         rows = ''.join(rows)
