@@ -156,7 +156,8 @@ class Cell(object):
             self.cell_type = "inlineStr"
         elif isinstance(value, Formula):
             self.cell_type = 'str'
-            value.add_ref(self)
+            if value.shared:
+                value = value.share(self)
         else:
             raise ValueError("Unsupported cell value: %r" % value)
         self._value = value
@@ -236,25 +237,24 @@ class Formula(object):
         self.shared = shared
         self.master = master
         self.index = None
-        self.children = []
+        self.refs = []
         self._ref_str = ''
 
-    def add_ref(self, cell):
-        if self.shared:
-            if not self.master:
-                # Formulas without a master are masters themselves
-                self.children.append(cell.reference)
-            else:
-                # Append the cell ref to the master's list of children
-                self.master.children.append(cell.reference)
+    def share(self, cell):
+        self.refs.append(cell.reference)
+        if len(self.refs) == 1:
+            # This is the first cell that this formula is being applied to.
+            # Return it directly.
+            return self
 
-    def share(self):
+        # A new cell is referring to this formula. Return a shared version that
+        # points to this one as the master formula.
         return Formula(None, shared=True, master=self)
 
     @property
     def _refs(self):
         if self.shared and not self.master and not self._ref_str:
-            sc = sorted(self.children)
+            sc = sorted(self.refs)
             low, high = sc[0], sc[-1]
             self._ref_str = "%s:%s" % (low, high)
         return self._ref_str

@@ -41,12 +41,12 @@ row3.cell("C3", shared_formula, format=bigfont)
 # you can work with cells directly on the sheet
 sheet.cell('D1', 12)
 sheet.cell('D2', 12)
-sheet.cell('D3', shared_formula.share())
+sheet.cell('D3', shared_formula)
 
 # and directly via row and column indicies
 sheet.cell(coords=(0, 4), value=40)
 sheet.cell(coords=(1, 4), value=2)
-sheet.cell(coords=(2, 4), value=shared_formula.share())
+sheet.cell(coords=(2, 4), value=shared_formula)
 
 # iteratively adding data is easy now
 for rowidx in xrange(5,10):
