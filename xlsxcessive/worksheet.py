@@ -254,7 +254,9 @@ class Formula(object):
     @property
     def _refs(self):
         if self.shared and not self.master and not self._ref_str:
+            # sort alphabetically and then by length to ensure correct ordering
             sc = sorted(self.refs)
+            sc = sorted(self.refs, key=len)
             low, high = sc[0], sc[-1]
             self._ref_str = "%s:%s" % (low, high)
         return self._ref_str
