@@ -129,7 +129,7 @@ class Column(object):
 
 class Cell(object):
     def __init__(self, reference=None, value=None, coords=None, format=None):
-        self._reference = reference
+        self._reference = reference.upper() if reference else reference
         self._coords = coords
         self.cell_type = None
         self._value = None

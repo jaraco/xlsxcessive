@@ -65,3 +65,8 @@ class TestCreatingCellsFromA1References(object):
         c = Cell.from_reference('A1')
         assert c.coords == (0, 0)
 
+class TestCreatingCellsWithLowerCaseReferences(object):
+    def test_the_reference_is_converted_to_uppercase(self):
+        c = Cell.from_reference('a1')
+        assert c.reference == 'A1'
+
