@@ -56,11 +56,12 @@ Calculations With Formulas
 Cells can also contain formulas. Formulas are created with a string representing
 the formula code. You can optionally supply a precalcuated value and a
 ``shared`` boolean flag if you wish to share the formula across a number of
-cells. Cells that wish to share the formula call its ``share()`` method.::
+cells. The first cell to reference a shared formula as its value is the master 
+cell for the formula. Other cells may also reference the formula.::
 
     formula = sheet1.formula('B1 + C1', shared=True)
-    sheet1.cell('C2', formula)
-    sheet1.cell('D2', formula.share())
+    sheet1.cell('C2', formula) # master
+    sheet1.cell('D2', formula) # shared, references the master formula
 
 
 Cells With Style
