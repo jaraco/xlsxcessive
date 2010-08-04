@@ -7,11 +7,14 @@ wb = Workbook()
 
 sheet = wb.new_sheet('Test Sheet')
 
-# a shared font
-bigfont = wb.stylesheet.new_format()
-bigfont.font(size=24)
+# a shared format
+bigguy = wb.stylesheet.new_format()
+bigguy.font(size=24)
 
-# another shared font style
+# add a border
+bigguy.border(top="medium", bottom="medium")
+
+# another shared format
 boldfont = wb.stylesheet.new_format()
 boldfont.font(bold=True)
 
@@ -21,7 +24,7 @@ row1 = sheet.row(1)
 # rows support adding cells - cells can currently store strings, numbers
 # and formulas.
 a1 = row1.cell("A1", "Hello, World!", format=boldfont)
-row1.cell("C1", 42.0, format=bigfont)
+row1.cell("C1", 42.0, format=bigguy)
 
 # cells can be merged with other cells - there is no checking on invalid merges
 # though. merge at your own risk!
@@ -30,13 +33,13 @@ a1.merge(Cell('B1'))
 # adding rows is easy
 row2 = sheet.row(2)
 row2.cell("B2", "Foo")
-row2.cell("C2", 1, format=bigfont)
+row2.cell("C2", 1, format=bigguy)
 
 # formulas are written as strings and can have default values
 shared_formula = sheet.formula("SUM(C1, C2)", 43.0, shared=True)
 
 row3 = sheet.row(3)
-row3.cell("C3", shared_formula, format=bigfont)
+row3.cell("C3", shared_formula, format=bigguy)
 
 # you can work with cells directly on the sheet
 sheet.cell('D1', 12)

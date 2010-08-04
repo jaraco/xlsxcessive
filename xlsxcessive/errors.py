@@ -1,0 +1,4 @@
+
+class XlsxFormatError(Exception):
+    pass
+
