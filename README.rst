@@ -103,11 +103,26 @@ contain the data.::
     a3.merge(Cell('D3'))
 
 
+It's Time To Save Your Work
+---------------------------
+
+You can save the generated OOXML data to a local file or to an output file
+stream.::
+
+    # local file
+    save(workbook, 'financials.xlsx')
+
+    # stream
+    save(workbook, 'financials.xlsx', stream=sys.stdout)
+
+
 Future
 ------
 
 This is certainly a work in progress.  The focus is going to be on improving the
 features that can be written out in the .xlsx file. That means more data types, 
-styles, metadata, etc. I don't think this library will ever be crafted to read
-.xlsx files. That's a job for another library that can hate its life.
+styles, metadata, etc. I also want to improve the validation of data before it
+is written in an incorrect manner and Excel complains about it. I don't think 
+this library will ever be crafted to read .xlsx files. That's a job for another 
+library that can hate its life.
 
