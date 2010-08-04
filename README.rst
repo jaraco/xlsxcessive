@@ -109,5 +109,5 @@ Future
 This is certainly a work in progress.  The focus is going to be on improving the
 features that can be written out in the .xlsx file. That means more data types, 
 styles, metadata, etc. I don't think this library will ever be crafted to read
-.xlsx files. That's a job for another library.
+.xlsx files. That's a job for another library that can hate its life.
 
