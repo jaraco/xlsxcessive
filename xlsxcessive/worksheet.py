@@ -1,3 +1,5 @@
+"""Classes that represent parts of an OOXML Worksheet."""
+
 import decimal
 import operator
 import string
@@ -6,7 +8,27 @@ from xlsxcessive import markup
 
 
 class Worksheet(object):
+    """An OOXML Worksheet."""
+
     def __init__(self, workbook, name, sheet_id, relation_id):
+        """Creates a new Worksheet. Semi-private class.
+
+        Usually instantiated through a Workbook instance.
+        
+        Arguments
+        ---------
+
+         - workbook ...... An xlsxcessive.workbook.Workbook instance.
+         - name .......... A string name for the worksheet.
+         - sheet_id ...... An integer ID that is not shared with any other sheet
+                           in the workbook.
+         - relation_id ... A relationship ID string that is not shared with any
+                           other sheet in the workbook.
+
+        Fully functional worksheets should include real values for workbook,
+        sheet_id and relation_id although you can pass None for those values
+        and still get a Worksheet instance.
+        """
         self.workbook = workbook
         self.name = name
         self.sheet_id = sheet_id
@@ -14,11 +36,13 @@ class Worksheet(object):
         self.ref = markup.worksheet_ref % self.__dict__
         self.rows = []
         self.row_map = {}
+        # Track formulas for sharing them amongst cells
         self.formulas = []
-        # for settings that apply to entire columns
+        # For settings that apply to entire columns
         self.cols = []
 
     def row(self, number):
+        """Returns a Row. If the row doesn't exist, it is created."""
         if number in self.row_map:
             return self.row_map[number]
         row = Row(self, number)
@@ -27,6 +51,10 @@ class Worksheet(object):
         return row
 
     def cell(self, *args, **params):
+        """Creates and returns a new Cell for this Worksheet.
+
+        Passes *args and **params to the Cell class constructor.
+        """
         cell = Cell(*args, **params)
         rowidx = int(cell.coords[0])
         row = self.row(rowidx + 1)
@@ -34,12 +62,20 @@ class Worksheet(object):
         return cell
 
     def formula(self, *args, **params):
+        """Creates and returns a new Formula for this Worksheet.
+
+        Passes *args and **params to the Formula class constructor.
+        """
         f = Formula(*args, **params)
         f.index = len(self.formulas)
         self.formulas.append(f)
         return f
         
     def col(self, *args, **params):
+        """Creates and returns a new Column object for this Worksheet.
+
+        Passes *args and **params to the Column class constructor.
+        """
         c = Column(self, *args, **params)
         self.cols.append(c)
         return c
