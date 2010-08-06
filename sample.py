@@ -10,6 +10,7 @@ sheet = wb.new_sheet('Test Sheet')
 # a shared format
 bigguy = wb.stylesheet.new_format()
 bigguy.font(size=24)
+bigguy.align('center')
 
 # add a border
 bigguy.border(top="medium", bottom="medium")

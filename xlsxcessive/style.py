@@ -57,10 +57,16 @@ class Stylesheet(object):
         }
 
 class Format(object):
+    VALID_ALIGNMENTS = [
+        'center', 'centerContinuous', 'distributed', 'fill', 'general',
+        'justify', 'left', 'right',
+    ]
+
     def __init__(self, stylesheet):
         self.stylesheet = stylesheet
         self._font = None
         self._border = None
+        self._alignment = None
         self.index = None
 
     def font(self, **params):
@@ -68,6 +74,12 @@ class Format(object):
 
     def border(self, **params):
         self._border = self.stylesheet.border(**params)
+
+    def align(self, value):
+        if value not in self.VALID_ALIGNMENTS:
+            msg = "%r is not a valid alignment value." % value
+            raise errors.XlsxFormatError(msg)
+        self._alignment = value
 
     def __str__(self):
         attrs = []
@@ -81,7 +93,13 @@ class Format(object):
                 'borderId="%d"' % self._border.index,
                 'applyBorder="1"',
             ])
-        return '<xf %s/>' % (" ".join(attrs))
+        children = []
+        if self._alignment:
+            children.append('<alignment horizontal="%s"/>' % self._alignment)
+        if not children:
+            return '<xf %s/>' % (" ".join(attrs))
+        else:
+            return '<xf %s>%s</xf>' % (" ".join(attrs), "".join(children))
 
 class Font(object):
     def __init__(self, **params):
