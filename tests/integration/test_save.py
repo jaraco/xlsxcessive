@@ -18,6 +18,9 @@ class TestWhenSaving(object):
         # add a border
         bigguy.border(top="medium", bottom="medium")
 
+        # set a specific number format
+        bigguy.number_format('0.00')
+
         # another shared font style
         boldfont = wb.stylesheet.new_format()
         boldfont.font(bold=True)

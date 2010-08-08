@@ -62,11 +62,21 @@ class Format(object):
         'justify', 'left', 'right',
     ]
 
+    COMMON_NUM_FORMATS = {
+        '0':1,
+        '0.00':2,
+        '#,000':3,
+        '#,##0.00':4,
+        '0%':9,
+        '0.00%':10,
+    }
+
     def __init__(self, stylesheet):
         self.stylesheet = stylesheet
         self._font = None
         self._border = None
         self._alignment = None
+        self._number_format = None
         self.index = None
 
     def font(self, **params):
@@ -81,6 +91,12 @@ class Format(object):
             raise errors.XlsxFormatError(msg)
         self._alignment = value
 
+    def number_format(self, fmt):
+        if fmt not in self.COMMON_NUM_FORMATS:
+            msg = "%r is not a valid number format." % fmt
+            raise errors.XlsxFormatError(msg)
+        self._number_format = self.COMMON_NUM_FORMATS[fmt]
+
     def __str__(self):
         attrs = []
         if self._font:
@@ -92,6 +108,11 @@ class Format(object):
             attrs.extend([
                 'borderId="%d"' % self._border.index,
                 'applyBorder="1"',
+            ])
+        if self._number_format is not None:
+            attrs.extend([
+                'numFmtId="%d"' % self._number_format,
+                'applyNumberFormat="1"',
             ])
         children = []
         if self._alignment:

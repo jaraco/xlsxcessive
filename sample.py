@@ -15,6 +15,10 @@ bigguy.align('center')
 # add a border
 bigguy.border(top="medium", bottom="medium")
 
+# set a specific number format. only a few are supported - see styles.py in
+# the Format class.
+bigguy.number_format('0.00')
+
 # another shared format
 boldfont = wb.stylesheet.new_format()
 boldfont.font(bold=True)
