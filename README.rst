@@ -78,6 +78,12 @@ Once you have a style format you can apply it to cells.::
 
     sheet1.cell('A2', 'HI', format=bigfont)
 
+Other supported style transformations include cell alignment and borders.::
+
+    col_header = workbook.stylesheet.new_format()
+    col_header.align('center')
+    col_header.border(bottom='medium')
+
 
 Adjusting Column Width
 ----------------------
