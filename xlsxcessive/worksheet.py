@@ -4,6 +4,7 @@ import decimal
 import operator
 import string
 
+from xml.sax.saxutils import escape
 from xlsxcessive import markup
 
 
@@ -190,6 +191,9 @@ class Cell(object):
             self.cell_type = "n"
         elif isinstance(value, basestring):
             self.cell_type = "inlineStr"
+            value = escape(value)
+            if isinstance(value, unicode):
+                value = value.encode('utf-8')
         elif isinstance(value, Formula):
             self.cell_type = 'str'
             if value.shared:

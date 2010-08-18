@@ -70,6 +70,9 @@ class TestWhenSaving(object):
             for colidx in xrange(5, 11, 2):
                 sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
+        # write unicode value
+        sheet.cell('G2', value=u"43\u00b0")
+
         output = StringIO()
 
         xlsx.save(wb, 'testwb.xlsx', output)

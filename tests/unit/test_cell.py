@@ -70,3 +70,22 @@ class TestCreatingCellsWithLowerCaseReferences(object):
         c = Cell.from_reference('a1')
         assert c.reference == 'A1'
 
+class TestCellValues(object):
+    def test_string_values_are_escaped(self):
+        c = Cell('A1', value="AT&T")
+        actual = c.value
+        expected = "AT&amp;T"
+        assert actual == expected
+
+    def test_unicode_values_are_escaped(self):
+        c = Cell('A1', value=u"43\u00b0")
+        actual = c.value
+        # utf-8 encoded value
+        expected = "43\xc2\xb0"
+        assert actual == expected
+
+    def test_already_encoded_strings_are_not_escaped(self):
+        c = Cell('A1', value="43\xc2\xb0")
+        actual = c.value
+        expected = "43\xc2\xb0"
+        assert actual == expected

@@ -71,6 +71,9 @@ for rowidx in xrange(5,10):
 # set column widths
 sheet.col(2, width=5)
 
+# write unicode value
+sheet.cell('G2', value=u"43\u00b0")
+
 if __name__ == '__main__':
     import os
     import sys
