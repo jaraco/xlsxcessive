@@ -59,7 +59,9 @@ HOMEPAGE_HTML = """\
         Follow the development of 
         <a href="http://bitbucket.org/dowski/xlsxcessive/overview">
             XlsXcessive at BitBucket
-        </a>. Email christian *at* dowski.com with questions and comments.
+        </a>. Email christian *at* dowski.com or tweet
+        <a href="http://twitter.com/dowskimania">@dowskimania</a> with questions
+        and/or comments.
         </p>
     </div>
     <div id="demo" style="float:left;width:59%;">
@@ -68,7 +70,7 @@ HOMEPAGE_HTML = """\
         Enter some numbers, words and formulas below and
         export them as an Excel spreadsheet.
         </p>
-        <form method="GET" action="">
+        <form method="GET" action="demo">
             <table border="0" style="width:100%">
                 <tr>
                     <td align="center" colspan="2">A</td>
@@ -142,11 +144,17 @@ HOMEPAGE_HTML = """\
 class HomePage(object):
     exposed = True
 
+    def GET(self):
+        return HOMEPAGE_HTML
+    
+class Demo(object):
+    exposed = True
+
     def GET(self, **cells):
         if cells:
             return self._generate_xlsx(cells)
-        return HOMEPAGE_HTML
-    
+        return ''
+
     def _generate_xlsx(self, cells):
         workbook = Workbook()
         sheet = workbook.new_sheet('Demo Sheet')
@@ -190,4 +198,7 @@ conf = {
     },
 }
 
-cherrypy.quickstart(HomePage(), '/', conf)
+homepage = HomePage()
+homepage.demo = Demo()
+
+cherrypy.quickstart(homepage, '/', conf)
