@@ -30,7 +30,7 @@ HOMEPAGE_HTML = """\
 </head>
 <body>
     <div id="copy" style="float:left;width:40%;">
-        <img src="/static/logo.png" />
+        <img src="/static/logo.png" title="No graphic designers were harmed in the creation of this logo." />
         <blockquote>
         A cross-platform Python library for generating Excel 2007 compatible 
         spreadsheets. A <em>simple</em> interface to an <em>excessive</em> file
