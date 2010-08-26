@@ -31,7 +31,8 @@ HOMEPAGE_HTML = """\
         styles, merged cells and multiple worksheets.
         </p>
         <p>
-        It is open source software developed at YouGov and licensed under the 
+        It is open source software developed at 
+        <a href="http://www.yougov.com/">YouGov</a> and licensed under the 
         MIT license.
         </p>
         <p>
