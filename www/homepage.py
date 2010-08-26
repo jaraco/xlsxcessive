@@ -15,6 +15,17 @@ HOMEPAGE_HTML = """\
         input {
             width:100%;
         }
+        .installation-tip {
+            font-size:10pt;
+            font-style:italic;
+        }
+        #copy {
+            background-color:#EEEEEE;
+            height:100%;
+        }
+        #demo {
+            margin-left:1%;
+        }
     </style>
 </head>
 <body>
@@ -51,7 +62,7 @@ HOMEPAGE_HTML = """\
         </a>. Email christian *at* dowski.com with questions and comments.
         </p>
     </div>
-    <div id="demo" style="float:left;width:60%;">
+    <div id="demo" style="float:left;width:59%;">
         <h2>Try It!</h2>
         <p>
         Enter some numbers, words and formulas below and
@@ -103,16 +114,26 @@ HOMEPAGE_HTML = """\
             </p>
         </form>
         <h2>Get It!</h2>
-        Install with <code>easy_install</code>
+        <p>Install with <code>easy_install</code></p>
         <pre>
         easy_install XlsXcessive
         </pre>
-        or <a href="http://bitbucket.org/dowski/xlsxcessive/downloads">
+        <p>or <a href="http://bitbucket.org/dowski/xlsxcessive/downloads">
             download a release
-        </a>, unpack it and ...
+        </a>, unpack it and ...</p>
         <pre>
         python setup.py install
         </pre>
+        <p class="installation-tip">Note: lxml is a downstream dependency. 
+        If you are installing on Linux you'll need the development headers for 
+        <code>libxml2</code> and <code>libxlst1</code>. On Ubuntu/Debian you can
+        run:</p>
+        <pre>
+        sudo apt-get install libxml2-dev libxslt1-dev
+        </pre>
+        <p class="installation-tip">Refer to the 
+        <a href="http://codespeak.net/lxml/installation.html">lxml docs</a> for 
+        installation requirements on other platforms.</p>
     </div>
 </body>
 </html>
