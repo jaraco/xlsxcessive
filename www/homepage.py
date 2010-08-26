@@ -160,6 +160,7 @@ class HomePage(object):
 conf = {
     '/':{
         'request.dispatch':cherrypy.dispatch.MethodDispatcher(),
+        'tools.decode.on':True,
     },
     '/static':{
         'tools.staticdir.on':True,
