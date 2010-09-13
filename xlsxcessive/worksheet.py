@@ -243,16 +243,16 @@ class Cell(object):
     coords = coords()
 
     def _coords_to_a1(self):
-        a1_col = []
-        base = self._coords[1]
-        mod = 0
-        while True:
-            base, rem = divmod(base, 26)
-            a1_col.append(string.ascii_uppercase[rem-mod])
-            if not base:
-                break
-            mod = 1
-        return "%s%d" % ("".join(reversed(a1_col)), self._coords[0] + 1)
+        # the following closure was adapted from
+        # http://stackoverflow.com/questions/22708/how-do-i-find-the-excel-column-name-that-corresponds-to-a-given-integer
+        def num_to_a(n):
+            n -= 1
+            if (n >= 0 and n < 26):
+                return chr(65 + n)
+            else:
+                return num_to_a(n / 26) + num_to_a(n % 26 + 1)
+        a1_col = num_to_a(self._coords[1] + 1)
+        return "%s%d" % (a1_col, self._coords[0] + 1)
 
     def _a1_to_coords(self):
         def _p():

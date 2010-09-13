@@ -7,24 +7,32 @@ from xlsxcessive.worksheet import Cell
 class TestCellCoordToA1Conversion(object):
     def test_cell_in_row_0_col_0_is_A1(self):
         c = Cell(coords=(0,0))
-        assert c.reference == 'A1'
+        actual = c.reference
+        assert actual == 'A1', actual
 
     def test_cell_in_row_0_col_25_is_Z1(self):
         c = Cell(coords=(0,25))
-        assert c.reference == 'Z1'
+        actual = c.reference
+        assert actual == 'Z1', actual
 
     def test_cell_in_row_0_col_26_is_AA1(self):
         c = Cell(coords=(0,26))
-        assert c.reference == 'AA1'
+        actual = c.reference
+        assert actual == 'AA1', actual
 
     def test_cell_in_row_9_col_52_is_BA10(self):
         c = Cell(coords=(9,52))
         assert c.reference == 'BA10'
 
-    def test_cell_in_row_0_col_1299_is_AYA1(self):
+    def test_cell_in_row_0_col_1299_is_AWZ1(self):
         c = Cell(coords=(0,1299))
         actual = c.reference
-        assert actual == 'AWZ1'
+        assert actual == 'AWZ1', actual
+
+    def test_cell_in_row_0_col_676_is_ZA1(self):
+        c = Cell(coords=(0,676))
+        actual = c.reference
+        assert actual == 'ZA1', actual
 
 class TestCellA1ToCoordConversion(object):
     def test_cell_A1_is_in_row_0_col_0(self):
@@ -54,6 +62,11 @@ class TestCellA1ToCoordConversion(object):
         c = Cell(reference='BFR1')
         actual = c.coords
         assert actual == (0,1525)
+
+    def test_cell_ZA1_is_in_row_0_col_676(self):
+        c = Cell('ZA1')
+        actual = c.coords
+        assert actual == (0, 676), actual
 
 class TestCreatingCellsFromCoordinates(object):
     def test_sets_A1_reference(self):
