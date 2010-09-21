@@ -15,13 +15,18 @@ bigguy.align('center')
 # add a border
 bigguy.border(top="medium", bottom="medium")
 
-# set a specific number format. only a few are supported - see styles.py in
-# the Format class.
+# set a builtin number format
 bigguy.number_format('0.00')
 
 # another shared format
 boldfont = wb.stylesheet.new_format()
 boldfont.font(bold=True)
+
+# and another
+highprec = wb.stylesheet.new_format()
+
+# set a custom number format on the shared format
+highprec.number_format("0.000")
 
 # the API supports adding rows
 row1 = sheet.row(1)
@@ -47,9 +52,9 @@ row3 = sheet.row(3)
 row3.cell("C3", shared_formula, format=bigguy)
 
 # you can work with cells directly on the sheet
-sheet.cell('D1', 12)
-sheet.cell('D2', 12)
-sheet.cell('D3', shared_formula)
+sheet.cell('D1', 12.0005, format=highprec)
+sheet.cell('D2', 11.9995, format=highprec)
+sheet.cell('D3', shared_formula, format=highprec)
 
 # and directly via row and column indicies
 sheet.cell(coords=(0, 4), value=40)

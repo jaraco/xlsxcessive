@@ -1,13 +1,17 @@
+from xml.sax.saxutils import escape
 from xlsxcessive import markup
 from xlsxcessive import errors
 
 
 class Stylesheet(object):
+    CUSTOM_NUM_OFFSET = 100
+
     def __init__(self, workbook):
         self.workbook = workbook
         self.fonts = []
         self.formats = []
         self.borders = []
+        self.custom_numbers = {}
         self._init_defaults()
 
     def _init_defaults(self):
@@ -34,10 +38,26 @@ class Stylesheet(object):
         f.index = self.formats.index(f)
         return f
             
+    def add_custom_number_format(self, formatstring):
+        """formatstring should be an XML escaped string."""
+        if formatstring in self.custom_numbers:
+            return self.custom_numbers[formatstring]
+        numid = self.CUSTOM_NUM_OFFSET + len(self.custom_numbers)
+        self.custom_numbers[formatstring] = numid
+        return numid
+
     def __str__(self):
+        numfmts = ''
         fonts = ''
         formats = ''
         borders = ''
+        if self.custom_numbers:
+            fcount = len(self.custom_numbers)
+            fxml = ""
+            for fcode, fid in self.custom_numbers.iteritems():
+                nf = '<numFmt numFmtId="%d" formatCode="%s"/>\n' % (fid, fcode)
+                fxml += nf
+            numfmts = '<numFmts count="%d">%s</numFmts>' % (fcount, fxml)
         if self.fonts:
             fxml = "\n".join(str(f) for f in self.fonts)
             fcount = len(self.fonts)
@@ -51,6 +71,7 @@ class Stylesheet(object):
             bcount = len(self.borders)
             borders = '<borders count="%d">%s</borders>' % (bcount, bxml)
         return markup.stylesheet % {
+            'numfmts':numfmts,
             'fonts':fonts, 
             'formats':formats,
             'borders':borders,
@@ -92,10 +113,15 @@ class Format(object):
         self._alignment = value
 
     def number_format(self, fmt):
-        if fmt not in self.COMMON_NUM_FORMATS:
-            msg = "%r is not a valid number format." % fmt
-            raise errors.XlsxFormatError(msg)
-        self._number_format = self.COMMON_NUM_FORMATS[fmt]
+        fmt = escape(fmt, {'"':"&quot;"})
+        all_formats = {}
+        all_formats.update(self.COMMON_NUM_FORMATS)
+        all_formats.update(self.stylesheet.custom_numbers)
+        if fmt not in all_formats:
+            fmtid = self.stylesheet.add_custom_number_format(fmt)
+        else:
+            fmtid = all_formats[fmt]
+        self._number_format = fmtid
 
     def __str__(self):
         attrs = []
