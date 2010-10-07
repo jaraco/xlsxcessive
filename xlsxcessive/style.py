@@ -154,6 +154,8 @@ class Font(object):
         self.name = params.get('name')
         self.family = params.get('family')
         self.bold = params.get('bold')
+	self.italic = params.get('italic')
+	self.underline = params.get('underline')
         self.index = None
 	self.color = params.get('color')
 
@@ -164,6 +166,8 @@ class Font(object):
             '<family val="%d"/>' % self.family if self.family else '',
 	    '<color rgb="%s"/>' % self.color if self.color else '',
             '<b/>' if self.bold else '',
+            '<i/>' if self.italic else '',
+            '<u/>' if self.underline else '',
         ]
         return '<font>%s</font>' % (" ".join(filter(None, elems)))
 
