@@ -155,12 +155,14 @@ class Font(object):
         self.family = params.get('family')
         self.bold = params.get('bold')
         self.index = None
+	self.color = params.get('color')
 
     def __str__(self):
         elems = [
             '<sz val="%d"/>' % self.size if self.size else '',
             '<name val="%s"/>' % self.name if self.name else '',
             '<family val="%d"/>' % self.family if self.family else '',
+	    '<color rgb="%s"/>' % self.color if self.color else '',
             '<b/>' if self.bold else '',
         ]
         return '<font>%s</font>' % (" ".join(filter(None, elems)))
