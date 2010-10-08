@@ -101,6 +101,11 @@ class Format(object):
         'd-mmm-yy':15,
         'd-mmm':16,
         'mmm-yy':17,
+        'h:mm AM/PM':18,
+        'h:mm:ss AM/PM':19,
+        'h:mm':20,
+        'h:mm:ss':21,
+        'm/d/yy h:mm':22
     }
 
     def __init__(self, stylesheet):
