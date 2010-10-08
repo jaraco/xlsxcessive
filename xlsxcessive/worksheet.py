@@ -176,11 +176,11 @@ class Cell(object):
         self._is_date = False
         self._is_datetime = False
         self._is_time = False
+        self.worksheet = worksheet
         if value is not None:
             self._set_value(value)
         self.format = format
         self.merge_range = None
-        self.worksheet = worksheet
 
     @classmethod
     def from_reference(cls, ref):
@@ -197,12 +197,22 @@ class Cell(object):
         if isinstance(value, (int, float, long, decimal.Decimal,
                          datetime.date, datetime.time, datetime.datetime)):
             self.cell_type = "n"
+            if self.worksheet and self.worksheet.workbook.date1904:
+                base = 1904
+            else: 
+                base = 1900
             if isinstance(value, datetime.datetime):
                 self._is_datetime = True
+                self.value = self._serialize_datetime(value, base)
+                return
             elif isinstance(value, datetime.date):
                 self._is_date = True
+                self.value = self._serialize_date(value, base)
+                return
             elif isinstance(value, datetime.time):
                 self._is_time = True
+                self.value = self._serialize_time(value)
+                return
         elif isinstance(value, basestring):
             self.cell_type = "inlineStr"
             value = escape(value)
@@ -280,18 +290,6 @@ class Cell(object):
         if self.cell_type == 'inlineStr':
             return "<is><t>%s</t></is>" % self.value
         elif self.cell_type == 'n':
-            if self._is_date or self._is_datetime:
-                if self.worksheet and self.worksheet.workbook.date1904:
-                    base = 1904
-                else: 
-                    base = 1900
-                if self._is_date:
-                    return "<v>%s</v>" % self._serialize_date(self.value, base)
-                else:
-                    return "<v>%s</v>" % self._serialize_datetime(self.value, base)
-            elif self._is_time:
-                return "<v>%s</v>" % self._serialize_time(self.value)
-            else:
                 return "<v>%s</v>" % self.value
         elif self.cell_type == 'str':
             return str(self.value)
