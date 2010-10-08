@@ -3,10 +3,12 @@
 import decimal
 import operator
 import string
+import datetime
 
 from xml.sax.saxutils import escape
 from xlsxcessive import markup
 
+class UnsupportedDateBase(Exception): pass
 
 class Worksheet(object):
     """An OOXML Worksheet."""
@@ -56,7 +58,7 @@ class Worksheet(object):
 
         Passes *args and **params to the Cell class constructor.
         """
-        cell = Cell(*args, **params)
+        cell = Cell(*args, worksheet=self, **params)
         rowidx = int(cell.coords[0])
         row = self.row(rowidx + 1)
         row.add_cell(cell)
@@ -165,7 +167,7 @@ class Column(object):
         return ''
 
 class Cell(object):
-    def __init__(self, reference=None, value=None, coords=None, format=None):
+    def __init__(self, reference=None, value=None, coords=None, format=None, worksheet=None):
         self._reference = reference.upper() if reference else reference
         self._coords = coords
         self.cell_type = None
@@ -174,6 +176,7 @@ class Cell(object):
             self._set_value(value)
         self.format = format
         self.merge_range = None
+        self.worksheet = worksheet
 
     @classmethod
     def from_reference(cls, ref):
@@ -187,7 +190,7 @@ class Cell(object):
         self.merge_range = "%s:%s" % (self.reference, other.reference)
 
     def _set_value(self, value):
-        if isinstance(value, (int, float, long, decimal.Decimal)):
+        if isinstance(value, (int, float, long, decimal.Decimal, datetime.date)):
             self.cell_type = "n"
         elif isinstance(value, basestring):
             self.cell_type = "inlineStr"
@@ -207,11 +210,52 @@ class Cell(object):
     
     value = property(fget=_get_value, fset=_set_value)
 
+    # Implementation of DATEVALUE to meet the requirements
+    # described in 3.17.4.1 of the OOXML spec part 4
+    #
+    # For 1900 based sytems:
+    #
+    # DATEVALUE("01-Jan-1900") results in the serial value 1.0000000...
+    # DATEVALUE("03-Feb-1910") results in the serial value 3687.0000000...
+    # DATEVALUE("01-Feb-2006") results in the serial value 38749.0000000...
+    # DATEVALUE("31-Dec-9999") results in the serial value 2958465.0000000...
+    #
+    # Furthermore:
+    # 
+    # DATEVALUE("28-Feb-1900") results in 59
+    # DATEVALUE("01-Mar-1900") results in 61
+    #
+    # For 1904 based systems:
+    #
+    # DATEVALUE("01-Jan-1904") results in the serial value 0.0000000...
+    # DATEVALUE("03-Feb-1910") results in the serial value 2225.0000000...
+    # DATEVALUE("01-Feb-2006") results in the serial value 37287.0000000...
+    # DATEVALUE("31-Dec-9999") results in the serial value 2957003.0000000...
+    #
+    def _serialize_date(self, dateobj, base=1900):
+        if base == 1900:
+            if dateobj < datetime.date(1900, 3, 1):
+                delta = datetime.date(base, 1, 1) - datetime.timedelta(days=1)
+            else:
+                delta = datetime.date(base, 1, 1) - datetime.timedelta(days=2)
+        elif base == 1904:
+            delta = datetime.date(base, 1, 1)
+        else:
+            raise UnsupportedDateBase, 'Date base must be either 1900 or 1904'
+        return (dateobj - delta).days
+
     def _format_value(self):
         if self.cell_type == 'inlineStr':
             return "<is><t>%s</t></is>" % self.value
         elif self.cell_type == 'n':
-            return "<v>%s</v>" % self.value
+            if isinstance(self.value, datetime.date):
+                if self.worksheet and self.worksheet.workbook.date1904:
+                    base = 1904
+                else: 
+                    base = 1900
+                return "<v>%s</v>" % self._serialize_date(self.value, base)
+            else:
+                return "<v>%s</v>" % self.value
         elif self.cell_type == 'str':
             return str(self.value)
 
@@ -222,6 +266,13 @@ class Cell(object):
         ]
         if self.format:
             attrs.append('s="%d"' % self.format.index)
+        # if we don't have an explicit format and the value is a date,
+        # then try to apply a default date format to the cell
+        elif isinstance(self.value, datetime.date):
+            # do we have a reference to the parent worksheet?
+            if self.worksheet:
+                idx = self.worksheet.workbook.stylesheet.default_date_format.index
+                attrs.append('s="%d"' % idx)
         return '<c %s>%s</c>' % (" ".join(attrs), self._format_value())
 
     @property

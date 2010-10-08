@@ -19,6 +19,9 @@ class Stylesheet(object):
         self.new_format()
         self.font()
         self.border(top='none', right='none', bottom='none', left='none')
+        # Init a default number format for dates
+        self.default_date_format = self.new_format()
+        self.default_date_format.number_format('mm-dd-yy')
 
     def border(self, **params):
         border = Border(**params)
@@ -90,6 +93,10 @@ class Format(object):
         '#,##0.00':4,
         '0%':9,
         '0.00%':10,
+        'mm-dd-yy':14,
+        'd-mmm-yy':15,
+        'd-mmm':16,
+        'mmm-yy':17,
     }
 
     def __init__(self, stylesheet):
@@ -154,17 +161,17 @@ class Font(object):
         self.name = params.get('name')
         self.family = params.get('family')
         self.bold = params.get('bold')
-	self.italic = params.get('italic')
-	self.underline = params.get('underline')
+        self.italic = params.get('italic')
+        self.underline = params.get('underline')
         self.index = None
-	self.color = params.get('color')
+        self.color = params.get('color')
 
     def __str__(self):
         elems = [
             '<sz val="%d"/>' % self.size if self.size else '',
             '<name val="%s"/>' % self.name if self.name else '',
             '<family val="%d"/>' % self.family if self.family else '',
-	    '<color rgb="%s"/>' % self.color if self.color else '',
+            '<color rgb="%s"/>' % self.color if self.color else '',
             '<b/>' if self.bold else '',
             '<i/>' if self.italic else '',
             '<u/>' if self.underline else '',

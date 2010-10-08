@@ -7,6 +7,7 @@ class Workbook(object):
     def __init__(self):
         self.sheets = []
         self.stylesheet = Stylesheet(self)
+        self.date1904 = False 
 
     def new_sheet(self, name):
         sid = len(self.sheets) + 1
@@ -19,5 +20,6 @@ class Workbook(object):
 
     def __str__(self):
         sheet_references = "".join(s.ref for s in self.sheets)
-        return markup.workbook % {'sheets':sheet_references}
+        return markup.workbook % {'date1904':'true' if self.date1904 else 'false', 
+                                  'sheets':sheet_references}
 
