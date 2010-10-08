@@ -23,7 +23,7 @@ class Stylesheet(object):
         self.default_date_format = self.new_format()
         self.default_date_format.number_format('mm-dd-yy')
         self.default_datetime_format = self.new_format()
-        self.default_datetime_format.number_format('mm-dd-yy h:mm:ss')
+        self.default_datetime_format.number_format('m/d/yy h:mm')
         self.default_time_format = self.new_format()
         self.default_time_format.number_format('h:mm:ss')
 
