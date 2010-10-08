@@ -1,5 +1,7 @@
-from xlsxcessive.worksheet import Cell
+import datetime
 
+from xlsxcessive.worksheet import Cell
+from xlsxcessive.workbook import Workbook # used for testing date conversions based to 1904
 
 # the ADDRESS function in Excel is useful for getting correct values to work from
 # for these tests.
@@ -102,3 +104,83 @@ class TestCellValues(object):
         actual = c.value
         expected = "43\xc2\xb0"
         assert actual == expected
+
+    # the following tests expect the date base to be 1/1/1900
+    # (which is the default; 1/1/1904 has to be set in the
+    # workbook)
+    def test_date_conversion_1900_1_1(self):
+        c = Cell('A1', value=datetime.date(1900, 1, 1))
+        assert c.value == 1
+
+    def test_date_conversion_1900_2_28(self):
+        c = Cell('A1', value=datetime.date(1900, 2, 28))
+        assert c.value == 59
+
+    def test_date_conversion_1900_3_1(self):
+        c = Cell('A1', value=datetime.date(1900, 3, 1))
+        assert c.value == 61
+
+    def test_date_conversion_1910_2_3(self):
+        c = Cell('A1', value=datetime.date(1910, 2, 3))
+        assert c.value == 3687
+
+    def test_date_conversion_2006_2_1(self):
+        c = Cell('A1', value=datetime.date(2006, 2, 1))
+        assert c.value == 38749
+
+    def test_date_conversion_9999_12_31(self):
+        c = Cell('A1', value=datetime.date(9999, 12, 31))
+        assert c.value == 2958465
+
+    # the following tests expect the date base to be 1/1/1904
+    # the datebase is set in the workbook, thus we need
+    # to instantaite a Workbook object first
+    def test_date_conversion_1904_1_1_date1904(self):
+        wb = Workbook()
+        wb.date1904 = True
+        sheet = wb.new_sheet('Sheet 1')
+        c = sheet.cell('A1', value=datetime.date(1904, 1, 1))
+        assert c.value == 0
+
+    def test_date_conversion_1910_2_3_date1904(self):
+        wb = Workbook()
+        wb.date1904 = True
+        sheet = wb.new_sheet('Sheet 1')
+        c = sheet.cell('A1', value=datetime.date(1910, 2, 3))
+        assert c.value == 2225
+
+    def test_date_conversion_2006_2_1_date1904(self):
+        wb = Workbook()
+        wb.date1904 = True
+        sheet = wb.new_sheet('Sheet 1')
+        c = sheet.cell('A1', value=datetime.date(2006, 2, 1))
+        assert c.value == 37287
+
+    def test_date_conversion_9999_12_31_date1904(self):
+        wb = Workbook()
+        wb.date1904 = True
+        sheet = wb.new_sheet('Sheet 1')
+        c = sheet.cell('A1', value=datetime.date(9999, 12, 31))
+        assert c.value == 2957003
+
+    # time conversion tests
+    def test_time_conversion_00_00_00(self):
+        c = Cell('A1', datetime.time(0, 0, 0))
+        assert c.value == 0.0
+
+    def test_time_conversion_00_00_01(self):
+        c = Cell('A1', datetime.time(0, 0, 1))
+        assert c.value == 0.0000115, c.value
+
+    def test_time_conversion_10_05_54(self):
+        c = Cell('A1', datetime.time(10, 5, 54))
+        assert c.value == 0.4207639, c.value
+
+    def test_time_conversion_12_00_00(self):
+        c = Cell('A1', datetime.time(12, 0, 0))
+        assert c.value == 0.5
+
+    def test_time_conversion_23_59_59(self):
+        c = Cell('A1', datetime.time(23, 59, 59))
+        assert c.value == 0.9999884, c.value
+
