@@ -58,7 +58,8 @@ class Worksheet(object):
 
         Passes *args and **params to the Cell class constructor.
         """
-        cell = Cell(*args, worksheet=self, **params)
+        params['worksheet'] = self
+        cell = Cell(*args, **params)
         rowidx = int(cell.coords[0])
         row = self.row(rowidx + 1)
         row.add_cell(cell)
