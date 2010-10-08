@@ -7,7 +7,7 @@ class Workbook(object):
     def __init__(self):
         self.sheets = []
         self.stylesheet = Stylesheet(self)
-        self.date1904 = False 
+        self.date1904 = False # do not change this value when you already inserted dates!
 
     def new_sheet(self, name):
         sid = len(self.sheets) + 1
