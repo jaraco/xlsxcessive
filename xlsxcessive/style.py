@@ -19,9 +19,13 @@ class Stylesheet(object):
         self.new_format()
         self.font()
         self.border(top='none', right='none', bottom='none', left='none')
-        # Init a default number format for dates
+        # Init default number formats for date, datetime and time
         self.default_date_format = self.new_format()
         self.default_date_format.number_format('mm-dd-yy')
+        self.default_datetime_format = self.new_format()
+        self.default_datetime_format.number_format('mm-dd-yy h:mm:ss')
+        self.default_time_format = self.new_format()
+        self.default_time_format.number_format('h:mm:ss')
 
     def border(self, **params):
         border = Border(**params)

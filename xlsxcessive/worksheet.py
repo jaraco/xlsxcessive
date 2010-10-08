@@ -173,6 +173,9 @@ class Cell(object):
         self._coords = coords
         self.cell_type = None
         self._value = None
+        self._is_date = False
+        self._is_datetime = False
+        self._is_time = False
         if value is not None:
             self._set_value(value)
         self.format = format
@@ -191,8 +194,15 @@ class Cell(object):
         self.merge_range = "%s:%s" % (self.reference, other.reference)
 
     def _set_value(self, value):
-        if isinstance(value, (int, float, long, decimal.Decimal, datetime.date)):
+        if isinstance(value, (int, float, long, decimal.Decimal,
+                         datetime.date, datetime.time, datetime.datetime)):
             self.cell_type = "n"
+            if isinstance(value, datetime.datetime):
+                self._is_datetime = True
+            elif isinstance(value, datetime.date):
+                self._is_date = True
+            elif isinstance(value, datetime.time):
+                self._is_time = True
         elif isinstance(value, basestring):
             self.cell_type = "inlineStr"
             value = escape(value)
@@ -245,16 +255,42 @@ class Cell(object):
             raise UnsupportedDateBase, 'Date base must be either 1900 or 1904'
         return (dateobj - delta).days
 
+    # Implementation of TIMEVALUE
+    #
+    # see OOXML spec part 4: 3.17.4.2 Time Representation
+    #
+    # TIMEVALUE("00:00:00") results in the serial value 0.0000000...
+    # TIMEVALUE("00:00:01") results in the serial value 0.0000115...
+    # TIMEVALUE("10:05:54") results in the serial value 0.4207639...
+    # TIMEVALUE("12:00:00") results in the serial value 0.5000000...
+    # TIMEVALUE("23:59:59") results in the serial value 0.9999884...
+    #
+    def _serialize_time(self, timeobj):
+        # calculate number of seconds since 00:00:00
+        seconds = (timeobj.second + timeobj.minute*60 + timeobj.hour*60*60)
+        return float(seconds) / 86400.0
+
+    # combination of DATEVALUE and TIMEVALUE
+    def _serialize_datetime(self, datetimeobj, base=1900):
+        date_float = float(self._serialize_date(datetimeobj.date(), base))
+        time_float = self._serialize_time(datetimeobj.time())
+        return date_float + time_float
+
     def _format_value(self):
         if self.cell_type == 'inlineStr':
             return "<is><t>%s</t></is>" % self.value
         elif self.cell_type == 'n':
-            if isinstance(self.value, datetime.date):
+            if self._is_date or self._is_datetime:
                 if self.worksheet and self.worksheet.workbook.date1904:
                     base = 1904
                 else: 
                     base = 1900
-                return "<v>%s</v>" % self._serialize_date(self.value, base)
+                if self._is_date:
+                    return "<v>%s</v>" % self._serialize_date(self.value, base)
+                else:
+                    return "<v>%s</v>" % self._serialize_datetime(self.value, base)
+            elif self._is_time:
+                return "<v>%s</v>" % self._serialize_time(self.value)
             else:
                 return "<v>%s</v>" % self.value
         elif self.cell_type == 'str':
@@ -267,12 +303,18 @@ class Cell(object):
         ]
         if self.format:
             attrs.append('s="%d"' % self.format.index)
-        # if we don't have an explicit format and the value is a date,
-        # then try to apply a default date format to the cell
-        elif isinstance(self.value, datetime.date):
-            # do we have a reference to the parent worksheet?
-            if self.worksheet:
+        # if we don't have an explicit format and the 
+        # value is a date, datetime or time
+        # then try to apply a default format to the cell
+        elif self.worksheet:
+            if self._is_date:
                 idx = self.worksheet.workbook.stylesheet.default_date_format.index
+                attrs.append('s="%d"' % idx)
+            elif self._is_datetime:
+                idx = self.worksheet.workbook.stylesheet.default_datetime_format.index
+                attrs.append('s="%d"' % idx)
+            elif self._is_time:
+                idx = self.worksheet.workbook.stylesheet.default_time_format.index
                 attrs.append('s="%d"' % idx)
         return '<c %s>%s</c>' % (" ".join(attrs), self._format_value())
 
