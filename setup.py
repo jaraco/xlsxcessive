@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="XlsXcessive",
-    version="0.1.4",
+    version="0.1.5",
     description="A Python library for writing .xlsx files.",
     packages=['xlsxcessive'],
     author="Christian Wyglendowski",
