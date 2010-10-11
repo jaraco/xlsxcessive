@@ -105,6 +105,19 @@ class TestCellValues(object):
         expected = "43\xc2\xb0"
         assert actual == expected
 
+# From Section 18.17.4.2 of the OOXML spec
+# ----------------------------------------
+# The time component of a serial value ranges in value from 0-0.99999999, and 
+# represents times from the instant starting 0:00:00 (12:00:00 AM) to the last
+# instant of 23:59:59 (11:59:59 P.M.), respectively. Going forward in time, the
+# time component of a serial value increases by 1/86,400 each second. [Note: As
+# such, the time 12:00 has a serial value time component of 0.5. end note]
+
+ONE_SEC = 1.0 / 86400
+NOON = ONE_SEC * 43200
+MIDNIGHT = ONE_SEC * 86400
+
+class TestCellDateTime(object):
     # the following tests expect the date base to be 1/1/1900
     # (which is the default; 1/1/1904 has to be set in the
     # workbook)
@@ -163,6 +176,7 @@ class TestCellValues(object):
         c = sheet.cell('A1', value=datetime.date(9999, 12, 31))
         assert c.value == 2957003
 
+
     # time conversion tests
     def test_time_conversion_00_00_00(self):
         c = Cell('A1', datetime.time(0, 0, 0))
@@ -170,17 +184,17 @@ class TestCellValues(object):
 
     def test_time_conversion_00_00_01(self):
         c = Cell('A1', datetime.time(0, 0, 1))
-        assert c.value == 0.0000115, c.value
+        assert c.value == ONE_SEC
 
     def test_time_conversion_10_05_54(self):
         c = Cell('A1', datetime.time(10, 5, 54))
-        assert c.value == 0.4207639, c.value
+        assert c.value == ONE_SEC * 36354
 
     def test_time_conversion_12_00_00(self):
         c = Cell('A1', datetime.time(12, 0, 0))
-        assert c.value == 0.5
+        assert c.value == NOON
 
     def test_time_conversion_23_59_59(self):
         c = Cell('A1', datetime.time(23, 59, 59))
-        assert c.value == 0.9999884, c.value
+        assert c.value == MIDNIGHT - ONE_SEC
 
