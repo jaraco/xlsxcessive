@@ -7,8 +7,24 @@ import datetime
 
 from xml.sax.saxutils import escape
 from xlsxcessive import markup
+from xlsxcessive.cache import CacheDecorator
 
 class UnsupportedDateBase(Exception): pass
+
+
+@CacheDecorator()
+def _coords_to_a1_helper(coords):
+    # the following closure was adapted from
+    # http://stackoverflow.com/questions/22708/how-do-i-find-the-excel-column-name-that-corresponds-to-a-given-integer
+    def num_to_a(n):
+        n -= 1
+        if (n >= 0 and n < 26):
+            return chr(65 + n)
+        else:
+            return num_to_a(n / 26) + num_to_a(n % 26 + 1)
+    a1_col = num_to_a(coords[1] + 1)
+    return "%s%d" % (a1_col, coords[0] + 1)
+
 
 class Worksheet(object):
     """An OOXML Worksheet."""
@@ -181,6 +197,8 @@ class Cell(object):
             self._set_value(value)
         self.format = format
         self.merge_range = None
+        if not self._reference and self._coords:
+            self._reference = self._coords_to_a1()
 
     @classmethod
     def from_reference(cls, ref):
@@ -318,10 +336,7 @@ class Cell(object):
 
     @property
     def reference(self):
-        if self._reference:
-            return self._reference
-        if self._coords:
-            return self._coords_to_a1()
+        return self._reference
 
     class coords(object):
         def __get__(self, instance, other):
@@ -335,16 +350,7 @@ class Cell(object):
     coords = coords()
 
     def _coords_to_a1(self):
-        # the following closure was adapted from
-        # http://stackoverflow.com/questions/22708/how-do-i-find-the-excel-column-name-that-corresponds-to-a-given-integer
-        def num_to_a(n):
-            n -= 1
-            if (n >= 0 and n < 26):
-                return chr(65 + n)
-            else:
-                return num_to_a(n / 26) + num_to_a(n % 26 + 1)
-        a1_col = num_to_a(self._coords[1] + 1)
-        return "%s%d" % (a1_col, self._coords[0] + 1)
+        return _coords_to_a1_helper(self._coords)
 
     def _a1_to_coords(self):
         def _p():
