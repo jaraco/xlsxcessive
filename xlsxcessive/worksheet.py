@@ -191,6 +191,8 @@ class Cell(object):
     def __init__(self, reference=None, value=None, coords=None, format=None, worksheet=None):
         self._reference = reference.upper() if reference else reference
         self._coords = coords
+        if not self._reference and self._coords:
+            self._reference = self._coords_to_a1()
         self.cell_type = None
         self._value = None
         self._is_date = False
@@ -201,8 +203,6 @@ class Cell(object):
             self._set_value(value)
         self.format = format
         self.merge_range = None
-        if not self._reference and self._coords:
-            self._reference = self._coords_to_a1()
 
     @classmethod
     def from_reference(cls, ref):
