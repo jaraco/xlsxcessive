@@ -184,6 +184,10 @@ class Column(object):
         return ''
 
 class Cell(object):
+    __slots__ = ('_reference', '_coords', 'cell_type', '_value', 
+                 '_is_date', '_is_datetime', '_is_time', 'worksheet', 
+                 'format' , 'merge_range')
+
     def __init__(self, reference=None, value=None, coords=None, format=None, worksheet=None):
         self._reference = reference.upper() if reference else reference
         self._coords = coords
