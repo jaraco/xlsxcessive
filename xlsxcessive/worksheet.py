@@ -179,7 +179,7 @@ class Column(object):
 
     def __str__(self):
         if self.width is not None:
-            fmt = '<col min="%d" max="%d" width="%s" />'
+            fmt = '<col min="%d" max="%d" width="%s" customWidth="1"/>'
             return fmt % (self.number, self.number, self.width)
         return ''
 
