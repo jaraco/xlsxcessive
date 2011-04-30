@@ -1,5 +1,5 @@
-Introduction
-------------
+Overview
+--------
 
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
