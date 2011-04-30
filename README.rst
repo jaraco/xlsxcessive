@@ -1,6 +1,3 @@
-XlsXcessive - XLSX Generation Library
-=====================================
-
 
 Introduction
 ------------
