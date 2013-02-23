@@ -33,7 +33,7 @@ class Worksheet(object):
         """Creates a new Worksheet. Semi-private class.
 
         Usually instantiated through a Workbook instance.
-        
+
         Arguments
         ---------
 
@@ -90,7 +90,7 @@ class Worksheet(object):
         f.index = len(self.formulas)
         self.formulas.append(f)
         return f
-        
+
     def col(self, *args, **params):
         """Creates and returns a new Column object for this Worksheet.
 
@@ -184,9 +184,9 @@ class Column(object):
         return ''
 
 class Cell(object):
-    __slots__ = ('_reference', '_coords', 'cell_type', '_value', 
-                 '_is_date', '_is_datetime', '_is_time', 'worksheet', 
-                 'format' , 'merge_range')
+    __slots__ = ('_reference', '_coords', 'cell_type', '_value',
+                 '_is_date', '_is_datetime', '_is_time', 'worksheet',
+                 'format', 'merge_range')
 
     def __init__(self, reference=None, value=None, coords=None, format=None, worksheet=None):
         self._reference = reference.upper() if reference else reference
@@ -221,7 +221,7 @@ class Cell(object):
             self.cell_type = "n"
             if self.worksheet and self.worksheet.workbook.date1904:
                 base = 1904
-            else: 
+            else:
                 base = 1900
             if isinstance(value, datetime.datetime):
                 self._is_datetime = True
@@ -250,7 +250,7 @@ class Cell(object):
 
     def _get_value(self):
         return self._value
-    
+
     value = property(fget=_get_value, fset=_set_value)
 
     # Implementation of DATEVALUE to meet the requirements
@@ -264,7 +264,7 @@ class Cell(object):
     # DATEVALUE("31-Dec-9999") results in the serial value 2958465.0000000...
     #
     # Furthermore:
-    # 
+    #
     # DATEVALUE("28-Feb-1900") results in 59
     # DATEVALUE("01-Mar-1900") results in 61
     #
@@ -284,7 +284,7 @@ class Cell(object):
         elif base == 1904:
             delta = datetime.date(base, 1, 1)
         else:
-            raise UnsupportedDateBase, 'Date base must be either 1900 or 1904'
+            raise UnsupportedDateBase('Date base must be either 1900 or 1904')
         return (dateobj - delta).days
 
     # Implementation of TIMEVALUE
@@ -323,7 +323,7 @@ class Cell(object):
         ]
         if self.format:
             attrs.append('s="%d"' % self.format.index)
-        # if we don't have an explicit format and the 
+        # if we don't have an explicit format and the
         # value is a date, datetime or time
         # then try to apply a default format to the cell
         elif self.worksheet:
@@ -368,7 +368,7 @@ class Cell(object):
         mod = 0
         for p, letter in zip(_p(), reversed(col_ref)):
             charval = string.ascii_uppercase.index(letter)
-            col += (p  * (charval + mod))
+            col += (p * (charval + mod))
             mod = 1
         return row, col
 
@@ -415,4 +415,3 @@ class Formula(object):
         sattrs = " %s" % (" ".join(attrs)) if attrs else ''
         ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
         return '<f %s>%s</f>%s' % (sattrs, self.source, ival)
-
