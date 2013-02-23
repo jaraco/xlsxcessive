@@ -4,7 +4,7 @@ from xlsxcessive.worksheet import Worksheet
 
 
 class TestAddingCellsToWorksheet(object):
-    def setUp(self):
+    def setup_method(self, method):
         self.sheet = Worksheet(None, 'test', None, None)
 
     def _coords_to_a1(self, coords):
@@ -36,7 +36,7 @@ class TestAddingCellsToWorksheet(object):
         assert self.sheet.rows
 
 class TestCallingRowMethod(object):
-    def setUp(self):
+    def setup_method(self, method):
         self.sheet = Worksheet(None, 'test', None, None)
 
     def test_creates_row_when_it_doesnt_exist(self):
@@ -53,4 +53,3 @@ class TestCallingRowMethod(object):
         assert row.number == 3
         assert self.sheet.row_map[3] == row
         assert self.sheet.rows[0].number == 3
-
