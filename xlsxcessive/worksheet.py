@@ -168,14 +168,16 @@ class Row(object):
 class Column(object):
     def __init__(self, worksheet, number=None, index=None, width=None):
         if index is not None:
-            self.index = index
             self.number = index + 1
         elif number is not None:
             self.number = number
-            self.index = number - 1
         else:
             raise ValueError("One of number or index must be supplied.")
         self.width = width
+
+    @property
+    def index(self):
+        return self.number - 1
 
     def __str__(self):
         if self.width is not None:
