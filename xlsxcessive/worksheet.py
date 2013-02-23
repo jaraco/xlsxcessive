@@ -166,23 +166,41 @@ class Row(object):
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 class Column(object):
-    def __init__(self, worksheet, number=None, index=None, width=None):
-        if index is not None:
-            number = index + 1
-        if number is None:
+    __slots__ = 'width', 'number'
+
+    def __init__(self, worksheet, **params):
+        for name, value in params.iteritems():
+            setattr(self, name, value)
+        if not hasattr(self, 'number'):
             raise ValueError("One of number or index must be supplied.")
-        self.number = number
-        self.width = width
 
     @property
     def index(self):
         return self.number - 1
 
+    @index.setter
+    def index(self, value):
+        self.number = value + 1
+
     def __str__(self):
-        if self.width is not None:
-            fmt = '<col min="%d" max="%d" width="%s" customWidth="1"/>'
-            return fmt % (self.number, self.number, self.width)
-        return ''
+        params = {}
+
+        if getattr(self, 'width', None) is not None:
+            params['width'] = self.width
+            params['customWidth'] = 1
+
+        if not params:
+            return ''
+
+        params.update(self._colspec)
+        attrs = ' '.join('{key}="{value}"'.format(**vars())
+            for key, value in params.iteritems())
+
+        return '<col ' + attrs + '/>'
+
+    @property
+    def _colspec(self):
+        return dict(min=self.number, max=self.number)
 
 class Cell(object):
     __slots__ = ('_reference', '_coords', 'cell_type', '_value',
