@@ -166,7 +166,7 @@ class Row(object):
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 class Column(object):
-    __slots__ = 'width', 'number'
+    __slots__ = 'width', 'number', 'best_fit'
 
     def __init__(self, worksheet, **params):
         for name, value in params.iteritems():
@@ -188,6 +188,9 @@ class Column(object):
         if getattr(self, 'width', None) is not None:
             params['width'] = self.width
             params['customWidth'] = 1
+
+        if getattr(self, 'best_fit', None) is not None:
+            params['bestFit'] = self.best_fit
 
         if not params:
             return ''
