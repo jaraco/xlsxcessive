@@ -168,11 +168,10 @@ class Row(object):
 class Column(object):
     def __init__(self, worksheet, number=None, index=None, width=None):
         if index is not None:
-            self.number = index + 1
-        elif number is not None:
-            self.number = number
-        else:
+            number = index + 1
+        if number is None:
             raise ValueError("One of number or index must be supplied.")
+        self.number = number
         self.width = width
 
     @property
