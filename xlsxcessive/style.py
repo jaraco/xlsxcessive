@@ -44,7 +44,7 @@ class Stylesheet(object):
         self.formats.append(f)
         f.index = self.formats.index(f)
         return f
-            
+
     def add_custom_number_format(self, formatstring):
         """formatstring should be an XML escaped string."""
         if formatstring in self.custom_numbers:
@@ -79,7 +79,7 @@ class Stylesheet(object):
             borders = '<borders count="%d">%s</borders>' % (bcount, bxml)
         return markup.stylesheet % {
             'numfmts':numfmts,
-            'fonts':fonts, 
+            'fonts':fonts,
             'formats':formats,
             'borders':borders,
         }
