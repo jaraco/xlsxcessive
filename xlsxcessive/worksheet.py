@@ -1,9 +1,9 @@
 """Classes that represent parts of an OOXML Worksheet."""
 
-import decimal
 import operator
 import string
 import datetime
+import numbers
 
 import six
 
@@ -243,8 +243,12 @@ class Cell(object):
         self.merge_range = "%s:%s" % (self.reference, other.reference)
 
     def _set_value(self, value):
-        if isinstance(value, (int, float, long, decimal.Decimal,
-                         datetime.date, datetime.time, datetime.datetime)):
+        date_types = datetime.date, datetime.time, datetime.datetime
+        is_numeric = (
+            isinstance(value, numbers.Number) or
+            isinstance(value, date_types)
+        )
+        if is_numeric:
             self.cell_type = "n"
             if self.worksheet and self.worksheet.workbook.date1904:
                 base = 1904
