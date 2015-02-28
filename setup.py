@@ -12,5 +12,6 @@ setup(
     license="MIT",
     install_requires = [
         'openpack',
+        'six',
     ],
 )
