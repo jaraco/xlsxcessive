@@ -1,6 +1,11 @@
 XlsXcessive - Changes
 =====================
 
+0.3.0 - 2015/11/23
+------------------
+
+* Fixes for Python 3. Tests now pass on Python 3.
+
 0.2.0 - 2015/11/23
 ------------------
 
