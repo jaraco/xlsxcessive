@@ -223,13 +223,11 @@ class Cell(object):
         if not self._reference and self._coords:
             self._reference = self._coords_to_a1()
         self.cell_type = None
-        self._value = None
         self._is_date = False
         self._is_datetime = False
         self._is_time = False
         self.worksheet = worksheet
-        if value is not None:
-            self._set_value(value)
+        self.value = value
         self.format = format
         self.merge_range = None
 
@@ -244,7 +242,12 @@ class Cell(object):
     def merge(self, other):
         self.merge_range = "%s:%s" % (self.reference, other.reference)
 
-    def _set_value(self, value):
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
         date_types = datetime.date, datetime.time, datetime.datetime
         is_numeric = (
             isinstance(value, numbers.Number) or
@@ -277,14 +280,11 @@ class Cell(object):
             self.cell_type = 'str'
             if value.shared:
                 value = value.share(self)
+        elif value is None:
+            pass
         else:
             raise ValueError("Unsupported cell value: %r" % value)
         self._value = value
-
-    def _get_value(self):
-        return self._value
-
-    value = property(fget=_get_value, fset=_set_value)
 
     # Implementation of DATEVALUE to meet the requirements
     # described in 3.17.4.1 of the OOXML spec part 4
