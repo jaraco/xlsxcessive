@@ -1,5 +1,7 @@
 """Classes that represent parts of an OOXML Worksheet."""
 
+from __future__ import division
+
 import operator
 import string
 import datetime
@@ -23,7 +25,7 @@ def _coords_to_a1_helper(coords):
         if (n >= 0 and n < 26):
             return chr(65 + n)
         else:
-            return num_to_a(n / 26) + num_to_a(n % 26 + 1)
+            return num_to_a(n // 26) + num_to_a(n % 26 + 1)
     a1_col = num_to_a(coords[1] + 1)
     return "%s%d" % (a1_col, coords[0] + 1)
 
@@ -331,7 +333,7 @@ class Cell(object):
     def _serialize_time(self, timeobj):
         # calculate number of seconds since 00:00:00
         seconds = (timeobj.second + timeobj.minute*60 + timeobj.hour*60*60)
-        return float(seconds) / 86400.0
+        return seconds / 86400
 
     # combination of DATEVALUE and TIMEVALUE
     def _serialize_datetime(self, datetimeobj, base=1900):
