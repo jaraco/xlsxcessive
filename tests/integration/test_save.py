@@ -1,6 +1,7 @@
 """Smoke tests for xlsxcessive."""
 
-from cStringIO import StringIO
+import io
+
 from xlsxcessive import xlsx
 from xlsxcessive.worksheet import Cell
 
@@ -66,14 +67,14 @@ class TestWhenSaving(object):
         sheet.cell('D4', times_two)
 
         # iteratively adding data is easy now
-        for rowidx in xrange(5,10):
-            for colidx in xrange(5, 11, 2):
+        for rowidx in range(5,10):
+            for colidx in range(5, 11, 2):
                 sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
         # write unicode value
         sheet.cell('G2', value=u"43\u00b0")
 
-        output = StringIO()
+        output = io.BytesIO()
 
         xlsx.save(wb, 'testwb.xlsx', output)
 
