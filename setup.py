@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(
+setup_params = dict(
     name="XlsXcessive",
     version="0.2.0",
     description="A Python library for writing .xlsx files.",
@@ -22,3 +22,6 @@ setup(
         "Programming Language :: Python :: 3",
     ],
 )
+
+if __name__ == '__main__':
+    setup(**setup_params)
