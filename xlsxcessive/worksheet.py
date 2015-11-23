@@ -276,6 +276,8 @@ class Cell(object):
             value = escape(value)
             if isinstance(value, six.text_type):
                 value = value.encode('utf-8')
+        elif isinstance(value, bytes):
+            self.cell_type = "inlineStr"
         elif isinstance(value, Formula):
             self.cell_type = 'str'
             if value.shared:

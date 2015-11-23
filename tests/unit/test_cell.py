@@ -48,7 +48,7 @@ class TestCellA1ToCoordConversion(object):
 
     def test_cell_AA1_is_in_row_0_col_26(self):
         c = Cell(reference='AA1')
-        actual = c.coords 
+        actual = c.coords
         assert actual == (0,26)
 
     def test_cell_BA10_is_in_row_9_col_52(self):
@@ -89,25 +89,25 @@ class TestCellValues(object):
     def test_string_values_are_escaped(self):
         c = Cell('A1', value="AT&T")
         actual = c.value
-        expected = "AT&amp;T"
+        expected = b"AT&amp;T"
         assert actual == expected
 
     def test_unicode_values_are_escaped(self):
         c = Cell('A1', value=u"43\u00b0")
         actual = c.value
         # utf-8 encoded value
-        expected = "43\xc2\xb0"
+        expected = b"43\xc2\xb0"
         assert actual == expected
 
     def test_already_encoded_strings_are_not_escaped(self):
-        c = Cell('A1', value="43\xc2\xb0")
+        c = Cell('A1', value=b"43\xc2\xb0")
         actual = c.value
-        expected = "43\xc2\xb0"
+        expected = b"43\xc2\xb0"
         assert actual == expected
 
 # From Section 18.17.4.2 of the OOXML spec
 # ----------------------------------------
-# The time component of a serial value ranges in value from 0-0.99999999, and 
+# The time component of a serial value ranges in value from 0-0.99999999, and
 # represents times from the instant starting 0:00:00 (12:00:00 AM) to the last
 # instant of 23:59:59 (11:59:59 P.M.), respectively. Going forward in time, the
 # time component of a serial value increases by 1/86,400 each second. [Note: As
