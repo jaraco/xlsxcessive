@@ -1,12 +1,12 @@
 .. image:: https://img.shields.io/pypi/v/xlsxcessive.svg
-:target: https://pypi.org/project/xlsxcessive
+   :target: https://pypi.org/project/xlsxcessive
 
 .. image:: https://img.shields.io/pypi/pyversions/xlsxcessive.svg
 
 .. image:: https://img.shields.io/pypi/dm/xlsxcessive.svg
 
 .. image:: https://img.shields.io/travis/jaraco/xlsxcessive/master.svg
-:target: http://travis-ci.org/jaraco/xlsxcessive
+   :target: http://travis-ci.org/jaraco/xlsxcessive
 
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
