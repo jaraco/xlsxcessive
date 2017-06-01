@@ -69,12 +69,12 @@ sheet.cell('C4', 50)
 sheet.cell('D4', times_two)
 
 # iteratively adding data is easy now
-for rowidx in xrange(5,10):
-    for colidx in xrange(5, 11, 2):
+for rowidx in range(5,10):
+    for colidx in range(5, 11, 2):
         sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
 
 # set column widths
-sheet.col(2, width=5)
+sheet.col(number=2, width=5)
 
 # write unicode value
 sheet.cell('G2', value=u"43\u00b0")
@@ -85,12 +85,12 @@ if __name__ == '__main__':
     from xlsxcessive.xlsx import save
 
     if len(sys.argv) == 1:
-        print "USAGE: python sample.py NEWFILEPATH"
-        print "Writes a sample .xlsx file to NEWFILEPATH"
+        print("USAGE: python sample.py NEWFILEPATH")
+        print("Writes a sample .xlsx file to NEWFILEPATH")
         raise SystemExit(1)
 
     if os.path.exists(sys.argv[1]):
-        print "Aborted. File %s already exists." % sys.argv[1]
+        print("Aborted. File', sys.argv[1], 'already exists.")
         raise SystemExit(1)
 
     stream = None
