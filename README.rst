@@ -1,23 +1,37 @@
-Overview
---------
+.. image:: https://img.shields.io/pypi/v/xlsxcessive.svg
+:target: https://pypi.org/project/xlsxcessive
+
+.. image:: https://img.shields.io/pypi/pyversions/xlsxcessive.svg
+
+.. image:: https://img.shields.io/pypi/dm/xlsxcessive.svg
+
+.. image:: https://img.shields.io/travis/jaraco/xlsxcessive/master.svg
+:target: http://travis-ci.org/jaraco/xlsxcessive
 
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
 library by YouGov to wrap it up into an OOXML compatible ZIP file.
 
+License
+=======
+
+License is indicated in the project metadata (typically one or more
+of the Trove classifiers). For more details, see `this explanation
+<https://github.com/jaraco/skeleton/issues/1>`_.
+
 
 Creating a Workbook
--------------------
+===================
 
 The starting point for generating an .xlsx file is a workbook::
 
     from xlsxcessive.xlsx import Workbook
-    
+
     workbook = Workbook()
 
 
 Adding Worksheets
------------------
+=================
 
 The workbook alone isn't very useful. Multiple worksheets can be added to the
 workbook and contain the cells with data, formulas, etc. Worksheets are created
@@ -27,7 +41,7 @@ from the workbook and require a name::
 
 
 Working With Cells
-------------------
+==================
 
 Once you have a worksheet you can add some cells to it.::
 
@@ -47,12 +61,12 @@ cells.
 
 
 Calculations With Formulas
---------------------------
+==========================
 
 Cells can also contain formulas. Formulas are created with a string representing
 the formula code. You can optionally supply a precalcuated value and a
 ``shared`` boolean flag if you wish to share the formula across a number of
-cells. The first cell to reference a shared formula as its value is the master 
+cells. The first cell to reference a shared formula as its value is the master
 cell for the formula. Other cells may also reference the formula.::
 
     formula = sheet1.formula('B1 + C1', shared=True)
@@ -61,12 +75,12 @@ cell for the formula. Other cells may also reference the formula.::
 
 
 Cells With Style
-----------------
+================
 
 The library contains basic support for styling cells. The first thing you do is
 create a style format. Style formats are shared on a stylesheet on the
 workbook.::
-    
+
     bigfont = workbook.stylesheet.new_format()
     bigfont.font(size=24, bold=True)
 
@@ -82,7 +96,7 @@ Other supported style transformations include cell alignment and borders.::
 
 
 Adjusting Column Width
-----------------------
+======================
 
 It is possible to adjust column widths on a sheet. The column width is specified
 by either number or index.::
@@ -95,7 +109,7 @@ TODO: Referencing columns by letters.
 
 
 Merging Cells
--------------
+=============
 
 Cells can be merged together.  The left-most cell in the merge range should
 contain the data.::
@@ -105,8 +119,8 @@ contain the data.::
     a3.merge(Cell('D3'))
 
 
-It's Time To Save Your Work
----------------------------
+Save Your Work
+==============
 
 You can save the generated OOXML data to a local file or to an output file
 stream.::
@@ -119,12 +133,12 @@ stream.::
 
 
 Future
-------
+======
 
 This is certainly a work in progress.  The focus is going to be on improving the
-features that can be written out in the .xlsx file. That means more data types, 
+features that can be written out in the .xlsx file. That means more data types,
 styles, metadata, etc. I also want to improve the validation of data before it
-is written in an incorrect manner and Excel complains about it. I don't think 
-this library will ever be crafted to read .xlsx files. That's a job for another 
+is written in an incorrect manner and Excel complains about it. I don't think
+this library will ever be crafted to read .xlsx files. That's a job for another
 library that can hate its life.
 
