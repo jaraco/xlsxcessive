@@ -173,7 +173,7 @@ class Column(object):
     __slots__ = 'width', 'number', 'best_fit', 'style'
 
     def __init__(self, worksheet, **params):
-        for name, value in params.iteritems():
+        for name, value in params.items():
             setattr(self, name, value)
         if not hasattr(self, 'number'):
             raise ValueError("One of number or index must be supplied.")
@@ -204,7 +204,7 @@ class Column(object):
 
         params.update(self._colspec)
         attrs = ' '.join('{key}="{value}"'.format(**vars())
-            for key, value in params.iteritems())
+            for key, value in params.items())
 
         return '<col ' + attrs + '/>'
 

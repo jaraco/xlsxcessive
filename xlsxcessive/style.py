@@ -1,4 +1,7 @@
 from xml.sax.saxutils import escape
+
+import six
+
 from xlsxcessive import markup
 from xlsxcessive import errors
 
@@ -61,7 +64,7 @@ class Stylesheet(object):
         if self.custom_numbers:
             fcount = len(self.custom_numbers)
             fxml = ""
-            for fcode, fid in self.custom_numbers.iteritems():
+            for fcode, fid in six.iteritems(self.custom_numbers):
                 nf = '<numFmt numFmtId="%d" formatCode="%s"/>\n' % (fid, fcode)
                 fxml += nf
             numfmts = '<numFmts count="%d">%s</numFmts>' % (fcount, fxml)
