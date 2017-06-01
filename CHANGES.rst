@@ -1,3 +1,8 @@
+0.4.1
+-----
+
+* Corrected syntax issue in readme.
+
 0.4.0
 -----
 
