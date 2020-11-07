@@ -1,9 +1,9 @@
+import io
 import cherrypy
 import decimal
 
-from cStringIO import StringIO
-from textwrap import dedent
-from xlsxcessive.xlsx import Workbook, save
+from xlsxcessive.xlsx import save
+from xlsxcessive.workbook import Workbook
 
 
 XLSX_CT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -30,7 +30,9 @@ HOMEPAGE_HTML = """\
 </head>
 <body>
     <div id="copy" style="float:left;width:40%;">
-        <img src="/static/logo.png" title="No graphic designers were harmed in the creation of this logo." />
+        <img
+            src="/static/logo.png"
+            title="No graphic designers were harmed in the creation of this logo." />
         <blockquote>
         A cross-platform Python library for generating Excel 2007 compatible
         spreadsheets. A <em>simple</em> interface to an <em>excessive</em> file
@@ -167,7 +169,7 @@ class Demo:
                 if data:
                     value = self._infer_value(data, sheet)
                     sheet.cell(ref, value=value)
-        out = StringIO()
+        out = io.BytesIO()
         save(workbook, 'demo.xlsx', out)
         headers = cherrypy.response.headers
         headers['Content-Length'] = out.tell()
@@ -201,7 +203,12 @@ conf = {
     },
 }
 
-homepage = HomePage()
-homepage.demo = Demo()
 
-cherrypy.quickstart(homepage, '/', conf)
+def main():
+    homepage = HomePage()
+    homepage.demo = Demo()
+
+    cherrypy.quickstart(homepage, '/', conf)
+
+
+__name__ == '__main__' and main()
