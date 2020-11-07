@@ -392,7 +392,7 @@ class Cell(object):
     def reference(self):
         return self._reference
 
-    class coords(object):
+    class Coords:
         def __get__(self, instance, other):
             if instance._coords:
                 return instance._coords
@@ -402,7 +402,7 @@ class Cell(object):
         def __set__(self, instance, value):
             instance._coords = value
 
-    coords = coords()
+    coords = Coords()
 
     def _coords_to_a1(self):
         return _coords_to_a1_helper(self._coords)
