@@ -1,12 +1,21 @@
 .. image:: https://img.shields.io/pypi/v/xlsxcessive.svg
-   :target: https://pypi.org/project/xlsxcessive
+   :target: `PyPI link`_
 
 .. image:: https://img.shields.io/pypi/pyversions/xlsxcessive.svg
+   :target: `PyPI link`_
 
-.. image:: https://img.shields.io/pypi/dm/xlsxcessive.svg
+.. _PyPI link: https://pypi.org/project/xlsxcessive
 
-.. image:: https://img.shields.io/travis/jaraco/xlsxcessive/master.svg
-   :target: http://travis-ci.org/jaraco/xlsxcessive
+.. image:: https://github.com/jaraco/xlsxcessive/workflows/Automated%20Tests/badge.svg
+   :target: https://github.com/jaraco/xlsxcessive/actions?query=workflow%3A%22Automated+Tests%22
+   :alt: Automated Tests
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+   :alt: Code style: Black
+
+.. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
+..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
