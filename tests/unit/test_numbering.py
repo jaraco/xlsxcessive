@@ -24,6 +24,7 @@ class TestStylesheetNumbering(object):
         second = self.styles.add_custom_number_format("#.0000")
         assert first == second, (first, second)
 
+
 class TestFormatNumbering(object):
     def setup(self):
         self.styles = Stylesheet(None)
@@ -40,4 +41,3 @@ class TestFormatNumbering(object):
     def test_format_codes_are_escaped(self):
         self.format.number_format('"x"0.00')
         assert '&quot;x&quot;0.00' in self.styles.custom_numbers
-

@@ -67,9 +67,9 @@ class TestWhenSaving(object):
         sheet.cell('D4', times_two)
 
         # iteratively adding data is easy now
-        for rowidx in range(5,10):
+        for rowidx in range(5, 10):
             for colidx in range(5, 11, 2):
-                sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
+                sheet.cell(coords=(rowidx, colidx), value=rowidx * colidx)
 
         # write unicode value
         sheet.cell('G2', value=u"43\u00b0")
@@ -80,4 +80,3 @@ class TestWhenSaving(object):
 
         # something should now be in the StringIO object
         assert output.getvalue()
-

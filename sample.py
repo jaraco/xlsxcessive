@@ -69,9 +69,9 @@ sheet.cell('C4', 50)
 sheet.cell('D4', times_two)
 
 # iteratively adding data is easy now
-for rowidx in range(5,10):
+for rowidx in range(5, 10):
     for colidx in range(5, 11, 2):
-        sheet.cell(coords=(rowidx, colidx), value=rowidx*colidx)
+        sheet.cell(coords=(rowidx, colidx), value=rowidx * colidx)
 
 # set column widths
 sheet.col(number=2, width=5)

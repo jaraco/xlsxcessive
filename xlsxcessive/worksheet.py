@@ -13,7 +13,9 @@ from xml.sax.saxutils import escape
 from xlsxcessive import markup
 from xlsxcessive.cache import CacheDecorator
 
-class UnsupportedDateBase(Exception): pass
+
+class UnsupportedDateBase(Exception):
+    pass
 
 
 @CacheDecorator()
@@ -22,10 +24,11 @@ def _coords_to_a1_helper(coords):
     # http://stackoverflow.com/questions/22708/how-do-i-find-the-excel-column-name-that-corresponds-to-a-given-integer
     def num_to_a(n):
         n -= 1
-        if (n >= 0 and n < 26):
+        if n >= 0 and n < 26:
             return chr(65 + n)
         else:
             return num_to_a(n // 26) + num_to_a(n % 26 + 1)
+
     a1_col = num_to_a(coords[1] + 1)
     return "%s%d" % (a1_col, coords[0] + 1)
 
@@ -133,10 +136,11 @@ class Worksheet(object):
         else:
             merge_cells = ''
         return markup.worksheet % {
-            'rows':rows,
-            'cols':cols,
+            'rows': rows,
+            'cols': cols,
             'merge_cells': merge_cells,
         }
+
 
 class Row(object):
     def __init__(self, sheet, number):
@@ -152,7 +156,7 @@ class Row(object):
         cell = Cell(*args, **params)
         if cell.reference in self.cell_map:
             return self.cell_map[cell.reference]
-        cell.coords = (self.number-1, len(self.cells))
+        cell.coords = (self.number - 1, len(self.cells))
         self.add_cell(cell)
         return cell
 
@@ -168,6 +172,7 @@ class Row(object):
                 self.merge_cells.append(c.merge_range)
         cells = ''.join(cells)
         return '<row r="%s">%s</row>' % (self.number, cells)
+
 
 class Column(object):
     __slots__ = 'width', 'number', 'best_fit', 'style'
@@ -203,8 +208,9 @@ class Column(object):
             return ''
 
         params.update(self._colspec)
-        attrs = ' '.join('{key}="{value}"'.format(**vars())
-            for key, value in params.items())
+        attrs = ' '.join(
+            '{key}="{value}"'.format(**vars()) for key, value in params.items()
+        )
 
         return '<col ' + attrs + '/>'
 
@@ -212,12 +218,24 @@ class Column(object):
     def _colspec(self):
         return dict(min=self.number, max=self.number)
 
-class Cell(object):
-    __slots__ = ('_reference', '_coords', 'cell_type', '_value',
-                 '_is_date', '_is_datetime', '_is_time', 'worksheet',
-                 'format', 'merge_range')
 
-    def __init__(self, reference=None, value=None, coords=None, format=None, worksheet=None):
+class Cell(object):
+    __slots__ = (
+        '_reference',
+        '_coords',
+        'cell_type',
+        '_value',
+        '_is_date',
+        '_is_datetime',
+        '_is_time',
+        'worksheet',
+        'format',
+        'merge_range',
+    )
+
+    def __init__(
+        self, reference=None, value=None, coords=None, format=None, worksheet=None
+    ):
         self._reference = reference.upper() if reference else reference
         self._coords = coords
         if not self._reference and self._coords:
@@ -249,10 +267,7 @@ class Cell(object):
     @value.setter
     def value(self, value):
         date_types = datetime.date, datetime.time, datetime.datetime
-        is_numeric = (
-            isinstance(value, numbers.Number) or
-            isinstance(value, date_types)
-        )
+        is_numeric = isinstance(value, numbers.Number) or isinstance(value, date_types)
         if is_numeric:
             self.cell_type = "n"
             if self.worksheet and self.worksheet.workbook.date1904:
@@ -334,7 +349,7 @@ class Cell(object):
     #
     def _serialize_time(self, timeobj):
         # calculate number of seconds since 00:00:00
-        seconds = (timeobj.second + timeobj.minute*60 + timeobj.hour*60*60)
+        seconds = timeobj.second + timeobj.minute * 60 + timeobj.hour * 60 * 60
         return seconds / 86400
 
     # combination of DATEVALUE and TIMEVALUE
@@ -347,7 +362,7 @@ class Cell(object):
         if self.cell_type == 'inlineStr':
             return "<is><t>%s</t></is>" % self.value
         elif self.cell_type == 'n':
-                return "<v>%s</v>" % self.value
+            return "<v>%s</v>" % self.value
         elif self.cell_type == 'str':
             return str(self.value)
 
@@ -386,6 +401,7 @@ class Cell(object):
 
         def __set__(self, instance, value):
             instance._coords = value
+
     coords = coords()
 
     def _coords_to_a1(self):
@@ -397,15 +413,17 @@ class Cell(object):
             while True:
                 yield 26 ** i
                 i += 1
+
         row = int(''.join(filter(str.isdigit, self._reference))) - 1
         col_ref = ''.join(filter(str.isupper, self._reference))
         col = 0
         mod = 0
         for p, letter in zip(_p(), reversed(col_ref)):
             charval = string.ascii_uppercase.index(letter)
-            col += (p * (charval + mod))
+            col += p * (charval + mod)
             mod = 1
         return row, col
+
 
 class Formula(object):
     def __init__(self, source, initial_value=None, shared=False, master=None):
@@ -441,12 +459,15 @@ class Formula(object):
     def __str__(self):
         if self.master is not None:
             return '<f t="shared" si="%s" />' % self.master.index
-        attrs = filter(None, [
-            't="shared"' if self.shared else '',
-            'ref="%s"' % self._refs if self._refs else '',
-            'si="%d"' % self.master.index if self.master else '',
-            'si="%d"' % self.index if (self.shared and not self.master) else '',
-        ])
+        attrs = filter(
+            None,
+            [
+                't="shared"' if self.shared else '',
+                'ref="%s"' % self._refs if self._refs else '',
+                'si="%d"' % self.master.index if self.master else '',
+                'si="%d"' % self.index if (self.shared and not self.master) else '',
+            ],
+        )
         sattrs = " %s" % (" ".join(attrs)) if attrs else ''
         ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
         return '<f %s>%s</f>%s' % (sattrs, self.source, ival)

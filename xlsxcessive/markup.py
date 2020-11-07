@@ -19,7 +19,7 @@ worksheet = """\
 </worksheet>
 """
 
-worksheet_ref =  '<sheet name="%(name)s" sheetId="%(sheet_id)s" r:id="%(relation_id)s"/>'
+worksheet_ref = '<sheet name="%(name)s" sheetId="%(sheet_id)s" r:id="%(relation_id)s"/>'
 
 stylesheet = """\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -32,4 +32,3 @@ stylesheet = """\
 %(formats)s
 </styleSheet>
 """
-

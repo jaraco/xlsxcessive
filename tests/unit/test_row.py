@@ -11,4 +11,3 @@ class TestAddingCellsToRow(object):
         row = Row(None, 1)
         cell = row.cell(value=1)
         assert cell.coords[1] == 0
-

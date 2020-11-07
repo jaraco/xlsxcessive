@@ -28,4 +28,3 @@ def save(workbook, filename, stream=None):
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
     pack.save(stream or filename)
-

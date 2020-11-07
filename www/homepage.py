@@ -141,12 +141,14 @@ HOMEPAGE_HTML = """\
 </html>
 """
 
+
 class HomePage(object):
     exposed = True
 
     def GET(self):
         return HOMEPAGE_HTML
-    
+
+
 class Demo(object):
     exposed = True
 
@@ -158,7 +160,7 @@ class Demo(object):
     def _generate_xlsx(self, cells):
         workbook = Workbook()
         sheet = workbook.new_sheet('Demo Sheet')
-        for row in range(1,5):
+        for row in range(1, 5):
             for col in 'ABCD':
                 ref = '%s%d' % (col, row)
                 data = cells.get(ref, '').strip()
@@ -187,14 +189,15 @@ class Demo(object):
                     value = data
         return value
 
+
 conf = {
-    '/':{
-        'request.dispatch':cherrypy.dispatch.MethodDispatcher(),
-        'tools.decode.on':True,
+    '/': {
+        'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+        'tools.decode.on': True,
     },
-    '/static':{
-        'tools.staticdir.on':True,
-        'tools.staticdir.dir':'/home/christian/src/xlsxcessive/www/static',
+    '/static': {
+        'tools.staticdir.on': True,
+        'tools.staticdir.dir': '/home/christian/src/xlsxcessive/www/static',
     },
 }
 

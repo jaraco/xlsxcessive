@@ -81,34 +81,41 @@ class Stylesheet(object):
             bcount = len(self.borders)
             borders = '<borders count="%d">%s</borders>' % (bcount, bxml)
         return markup.stylesheet % {
-            'numfmts':numfmts,
-            'fonts':fonts,
-            'formats':formats,
-            'borders':borders,
+            'numfmts': numfmts,
+            'fonts': fonts,
+            'formats': formats,
+            'borders': borders,
         }
+
 
 class Format(object):
     VALID_ALIGNMENTS = [
-        'center', 'centerContinuous', 'distributed', 'fill', 'general',
-        'justify', 'left', 'right',
+        'center',
+        'centerContinuous',
+        'distributed',
+        'fill',
+        'general',
+        'justify',
+        'left',
+        'right',
     ]
 
     COMMON_NUM_FORMATS = {
-        '0':1,
-        '0.00':2,
-        '#,000':3,
-        '#,##0.00':4,
-        '0%':9,
-        '0.00%':10,
-        'mm-dd-yy':14,
-        'd-mmm-yy':15,
-        'd-mmm':16,
-        'mmm-yy':17,
-        'h:mm AM/PM':18,
-        'h:mm:ss AM/PM':19,
-        'h:mm':20,
-        'h:mm:ss':21,
-        'm/d/yy h:mm':22
+        '0': 1,
+        '0.00': 2,
+        '#,000': 3,
+        '#,##0.00': 4,
+        '0%': 9,
+        '0.00%': 10,
+        'mm-dd-yy': 14,
+        'd-mmm-yy': 15,
+        'd-mmm': 16,
+        'mmm-yy': 17,
+        'h:mm AM/PM': 18,
+        'h:mm:ss AM/PM': 19,
+        'h:mm': 20,
+        'h:mm:ss': 21,
+        'm/d/yy h:mm': 22,
     }
 
     def __init__(self, stylesheet):
@@ -132,7 +139,7 @@ class Format(object):
         self._alignment = value
 
     def number_format(self, fmt):
-        fmt = escape(fmt, {'"':"&quot;"})
+        fmt = escape(fmt, {'"': "&quot;"})
         all_formats = {}
         all_formats.update(self.COMMON_NUM_FORMATS)
         all_formats.update(self.stylesheet.custom_numbers)
@@ -145,20 +152,26 @@ class Format(object):
     def __str__(self):
         attrs = []
         if self._font:
-            attrs.extend([
-                'fontId="%d"' % self._font.index,
-                'applyFont="1"',
-            ])
+            attrs.extend(
+                [
+                    'fontId="%d"' % self._font.index,
+                    'applyFont="1"',
+                ]
+            )
         if self._border:
-            attrs.extend([
-                'borderId="%d"' % self._border.index,
-                'applyBorder="1"',
-            ])
+            attrs.extend(
+                [
+                    'borderId="%d"' % self._border.index,
+                    'applyBorder="1"',
+                ]
+            )
         if self._number_format is not None:
-            attrs.extend([
-                'numFmtId="%d"' % self._number_format,
-                'applyNumberFormat="1"',
-            ])
+            attrs.extend(
+                [
+                    'numFmtId="%d"' % self._number_format,
+                    'applyNumberFormat="1"',
+                ]
+            )
         children = []
         if self._alignment:
             children.append('<alignment horizontal="%s"/>' % self._alignment)
@@ -166,6 +179,7 @@ class Format(object):
             return '<xf %s/>' % (" ".join(attrs))
         else:
             return '<xf %s>%s</xf>' % (" ".join(attrs), "".join(children))
+
 
 class Font(object):
     def __init__(self, **params):
@@ -190,11 +204,23 @@ class Font(object):
         ]
         return '<font>%s</font>' % (" ".join(filter(None, elems)))
 
+
 class Border(object):
     VALID_BORDERS = [
-        'dashDot', 'dashDotDot', 'dashed', 'dotted', 'double', 'hair', 'medium',
-        'mediumDashDot', 'mediumDashDotDot', 'mediumDashed', 'none',
-        'slantDashDot', 'thick', 'thin',
+        'dashDot',
+        'dashDotDot',
+        'dashed',
+        'dotted',
+        'double',
+        'hair',
+        'medium',
+        'mediumDashDot',
+        'mediumDashDotDot',
+        'mediumDashed',
+        'none',
+        'slantDashDot',
+        'thick',
+        'thin',
     ]
 
     def __init__(self, top=None, right=None, bottom=None, left=None):
@@ -223,4 +249,3 @@ class Border(object):
         if self.bottom:
             children.append('<bottom style="%s" />' % self.bottom)
         return '<border>%s</border>' % ("".join(children))
-
