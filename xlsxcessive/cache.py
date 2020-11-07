@@ -1,4 +1,4 @@
-class CacheDecorator(object):
+class CacheDecorator:
     def __init__(self):
         self.cache = {}
         self.func = None

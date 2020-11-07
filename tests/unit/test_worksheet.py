@@ -3,7 +3,7 @@ import random
 from xlsxcessive.worksheet import Worksheet
 
 
-class TestAddingCellsToWorksheet(object):
+class TestAddingCellsToWorksheet:
     def setup_method(self, method):
         self.sheet = Worksheet(None, 'test', None, None)
 
@@ -41,7 +41,7 @@ class TestAddingCellsToWorksheet(object):
         assert self.sheet.rows
 
 
-class TestCallingRowMethod(object):
+class TestCallingRowMethod:
     def setup_method(self, method):
         self.sheet = Worksheet(None, 'test', None, None)
 

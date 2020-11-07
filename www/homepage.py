@@ -32,31 +32,31 @@ HOMEPAGE_HTML = """\
     <div id="copy" style="float:left;width:40%;">
         <img src="/static/logo.png" title="No graphic designers were harmed in the creation of this logo." />
         <blockquote>
-        A cross-platform Python library for generating Excel 2007 compatible 
+        A cross-platform Python library for generating Excel 2007 compatible
         spreadsheets. A <em>simple</em> interface to an <em>excessive</em> file
         format.
         </blockquote>
         <p>
-        XlsXcessive makes generating Excel compatible OOXML spreasheets easy. 
+        XlsXcessive makes generating Excel compatible OOXML spreasheets easy.
         It supports common features like multiple cell data types, formulas,
         styles, merged cells and multiple worksheets.
         </p>
         <p>
-        It is open source software developed at 
-        <a href="http://www.yougov.com/">YouGov</a> and licensed under the 
+        It is open source software developed at
+        <a href="http://www.yougov.com/">YouGov</a> and licensed under the
         MIT license.
         </p>
         <p>
-        Some basic documenation is in the 
+        Some basic documenation is in the
         <a href="http://bitbucket.org/dowski/xlsxcessive/src#wiki">
             <code>README.rst</code>
-        </a> file. Also see the 
+        </a> file. Also see the
         <a href="http://bitbucket.org/dowski/xlsxcessive/src/tip/sample.py">
             <code>sample.py</code>
         </a> file for an an example that excercises most of the current features
         of the library.
         <p>
-        Follow the development of 
+        Follow the development of
         <a href="http://bitbucket.org/dowski/xlsxcessive/overview">
             XlsXcessive at BitBucket
         </a>. Email christian *at* dowski.com or tweet
@@ -126,15 +126,15 @@ HOMEPAGE_HTML = """\
         <pre>
         python setup.py install
         </pre>
-        <p class="installation-tip">Note: lxml is a downstream dependency. 
-        If you are installing on Linux you'll need the development headers for 
+        <p class="installation-tip">Note: lxml is a downstream dependency.
+        If you are installing on Linux you'll need the development headers for
         <code>libxml2</code> and <code>libxlst1</code>. On Ubuntu/Debian you can
         run:</p>
         <pre>
         sudo apt-get install libxml2-dev libxslt1-dev
         </pre>
-        <p class="installation-tip">Refer to the 
-        <a href="http://codespeak.net/lxml/installation.html">lxml docs</a> for 
+        <p class="installation-tip">Refer to the
+        <a href="http://codespeak.net/lxml/installation.html">lxml docs</a> for
         installation requirements on other platforms.</p>
     </div>
 </body>
@@ -142,14 +142,14 @@ HOMEPAGE_HTML = """\
 """
 
 
-class HomePage(object):
+class HomePage:
     exposed = True
 
     def GET(self):
         return HOMEPAGE_HTML
 
 
-class Demo(object):
+class Demo:
     exposed = True
 
     def GET(self, **cells):

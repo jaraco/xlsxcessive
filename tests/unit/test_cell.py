@@ -9,7 +9,7 @@ from xlsxcessive.workbook import (
 # for these tests.
 
 
-class TestCellCoordToA1Conversion(object):
+class TestCellCoordToA1Conversion:
     def test_cell_in_row_0_col_0_is_A1(self):
         c = Cell(coords=(0, 0))
         actual = c.reference
@@ -40,7 +40,7 @@ class TestCellCoordToA1Conversion(object):
         assert actual == 'ZA1', actual
 
 
-class TestCellA1ToCoordConversion(object):
+class TestCellA1ToCoordConversion:
     def test_cell_A1_is_in_row_0_col_0(self):
         c = Cell(reference='A1')
         actual = c.coords
@@ -75,25 +75,25 @@ class TestCellA1ToCoordConversion(object):
         assert actual == (0, 676), actual
 
 
-class TestCreatingCellsFromCoordinates(object):
+class TestCreatingCellsFromCoordinates:
     def test_sets_A1_reference(self):
         c = Cell.from_coords((0, 0))
         assert c.reference == 'A1'
 
 
-class TestCreatingCellsFromA1References(object):
+class TestCreatingCellsFromA1References:
     def test_reference_A1_sets_coordinates_0_0(self):
         c = Cell.from_reference('A1')
         assert c.coords == (0, 0)
 
 
-class TestCreatingCellsWithLowerCaseReferences(object):
+class TestCreatingCellsWithLowerCaseReferences:
     def test_the_reference_is_converted_to_uppercase(self):
         c = Cell.from_reference('a1')
         assert c.reference == 'A1'
 
 
-class TestCellValues(object):
+class TestCellValues:
     def test_string_values_are_escaped(self):
         c = Cell('A1', value="AT&T")
         actual = c.value
@@ -127,7 +127,7 @@ NOON = ONE_SEC * 43200
 MIDNIGHT = ONE_SEC * 86400
 
 
-class TestCellDateTime(object):
+class TestCellDateTime:
     # the following tests expect the date base to be 1/1/1900
     # (which is the default; 1/1/1904 has to be set in the
     # workbook)

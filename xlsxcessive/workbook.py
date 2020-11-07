@@ -3,7 +3,7 @@ from xlsxcessive.style import Stylesheet, Format
 from xlsxcessive.worksheet import Worksheet
 
 
-class Workbook(object):
+class Workbook:
     def __init__(self):
         self.sheets = []
         self.stylesheet = Stylesheet(self)

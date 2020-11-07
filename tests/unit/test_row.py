@@ -1,7 +1,7 @@
 from xlsxcessive.worksheet import Row
 
 
-class TestAddingCellsToRow(object):
+class TestAddingCellsToRow:
     def test_cell_has_row_number(self):
         row = Row(None, 1)
         cell = row.cell(value=1)

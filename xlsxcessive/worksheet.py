@@ -33,7 +33,7 @@ def _coords_to_a1_helper(coords):
     return "%s%d" % (a1_col, coords[0] + 1)
 
 
-class Worksheet(object):
+class Worksheet:
     """An OOXML Worksheet."""
 
     def __init__(self, workbook, name, sheet_id, relation_id):
@@ -142,7 +142,7 @@ class Worksheet(object):
         }
 
 
-class Row(object):
+class Row:
     def __init__(self, sheet, number):
         self.sheet = sheet
         self.number = number
@@ -174,7 +174,7 @@ class Row(object):
         return '<row r="%s">%s</row>' % (self.number, cells)
 
 
-class Column(object):
+class Column:
     __slots__ = 'width', 'number', 'best_fit', 'style'
 
     def __init__(self, worksheet, **params):
@@ -219,7 +219,7 @@ class Column(object):
         return dict(min=self.number, max=self.number)
 
 
-class Cell(object):
+class Cell:
     __slots__ = (
         '_reference',
         '_coords',
@@ -425,7 +425,7 @@ class Cell(object):
         return row, col
 
 
-class Formula(object):
+class Formula:
     def __init__(self, source, initial_value=None, shared=False, master=None):
         self.source = source
         self.initial_value = initial_value

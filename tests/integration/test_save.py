@@ -6,7 +6,7 @@ from xlsxcessive import workbook, xlsx
 from xlsxcessive.worksheet import Cell
 
 
-class TestWhenSaving(object):
+class TestWhenSaving:
     def test_fairly_involved_save(self):
         wb = workbook.Workbook()
 

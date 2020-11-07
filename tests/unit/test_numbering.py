@@ -1,7 +1,7 @@
 from xlsxcessive.style import Stylesheet
 
 
-class TestStylesheetNumbering(object):
+class TestStylesheetNumbering:
     def setup(self):
         self.styles = Stylesheet(None)
 
@@ -25,7 +25,7 @@ class TestStylesheetNumbering(object):
         assert first == second, (first, second)
 
 
-class TestFormatNumbering(object):
+class TestFormatNumbering:
     def setup(self):
         self.styles = Stylesheet(None)
         self.format = self.styles.new_format()

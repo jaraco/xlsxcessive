@@ -6,7 +6,7 @@ from xlsxcessive import markup
 from xlsxcessive import errors
 
 
-class Stylesheet(object):
+class Stylesheet:
     CUSTOM_NUM_OFFSET = 100
 
     def __init__(self, workbook):
@@ -88,7 +88,7 @@ class Stylesheet(object):
         }
 
 
-class Format(object):
+class Format:
     VALID_ALIGNMENTS = [
         'center',
         'centerContinuous',
@@ -181,7 +181,7 @@ class Format(object):
             return '<xf %s>%s</xf>' % (" ".join(attrs), "".join(children))
 
 
-class Font(object):
+class Font:
     def __init__(self, **params):
         self.size = params.get('size')
         self.name = params.get('name')
@@ -205,7 +205,7 @@ class Font(object):
         return '<font>%s</font>' % (" ".join(filter(None, elems)))
 
 
-class Border(object):
+class Border:
     VALID_BORDERS = [
         'dashDot',
         'dashDotDot',
