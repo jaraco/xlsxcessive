@@ -21,20 +21,13 @@ XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
 library by YouGov to wrap it up into an OOXML compatible ZIP file.
 
-License
-=======
-
-License is indicated in the project metadata (typically one or more
-of the Trove classifiers). For more details, see `this explanation
-<https://github.com/jaraco/skeleton/issues/1>`_.
-
 
 Creating a Workbook
 ===================
 
 The starting point for generating an .xlsx file is a workbook::
 
-    from xlsxcessive.xlsx import Workbook
+    from xlsxcessive.workbook import Workbook
 
     workbook = Workbook()
 

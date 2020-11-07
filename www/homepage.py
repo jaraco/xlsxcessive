@@ -50,21 +50,13 @@ HOMEPAGE_HTML = """\
         </p>
         <p>
         Some basic documenation is in the
-        <a href="http://bitbucket.org/dowski/xlsxcessive/src#wiki">
-            <code>README.rst</code>
-        </a> file. Also see the
-        <a href="http://bitbucket.org/dowski/xlsxcessive/src/tip/sample.py">
+        <a href="https://github.com/jaraco/xlsxcessive">
+            <code>project repo</code>
+        </a>. Also see the
+        <a href="https://github.com/jaraco/xlsxcessive/blob/master/sample.py">
             <code>sample.py</code>
         </a> file for an an example that excercises most of the current features
         of the library.
-        <p>
-        Follow the development of
-        <a href="http://bitbucket.org/dowski/xlsxcessive/overview">
-            XlsXcessive at BitBucket
-        </a>. Email christian *at* dowski.com or tweet
-        <a href="http://twitter.com/dowskimania">@dowskimania</a> with questions
-        and/or comments.
-        </p>
     </div>
     <div id="demo" style="float:left;width:59%;">
         <h2>Try It!</h2>
@@ -118,26 +110,10 @@ HOMEPAGE_HTML = """\
             </p>
         </form>
         <h2>Get It!</h2>
-        <p>Install with <code>easy_install</code></p>
+        <p>Install with <code>pip</code></p>
         <pre>
-        easy_install XlsXcessive
+        pip install XlsXcessive
         </pre>
-        <p>or <a href="http://bitbucket.org/dowski/xlsxcessive/downloads">
-            download a release
-        </a>, unpack it and ...</p>
-        <pre>
-        python setup.py install
-        </pre>
-        <p class="installation-tip">Note: lxml is a downstream dependency.
-        If you are installing on Linux you'll need the development headers for
-        <code>libxml2</code> and <code>libxlst1</code>. On Ubuntu/Debian you can
-        run:</p>
-        <pre>
-        sudo apt-get install libxml2-dev libxslt1-dev
-        </pre>
-        <p class="installation-tip">Refer to the
-        <a href="http://codespeak.net/lxml/installation.html">lxml docs</a> for
-        installation requirements on other platforms.</p>
     </div>
 </body>
 </html>
