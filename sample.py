@@ -1,6 +1,6 @@
 """Just a simple example of XlsXcessive API usage."""
 
-from xlsxcessive.xlsx import Workbook
+from xlsxcessive.workbook import Workbook
 from xlsxcessive.worksheet import Cell
 
 wb = Workbook()

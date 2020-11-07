@@ -1,5 +1,3 @@
-from xlsxcessive import markup
-from xlsxcessive.workbook import Workbook
 from xlsxcessive.parts import WorkbookPart, WorksheetPart, StylesPart
 from openpack.officepack import OfficePackage
 
@@ -15,7 +13,6 @@ def save(workbook, filename, stream=None):
     pack.add(wbp)
     pack.relate(wbp)
 
-    ##print workbook.stylesheet
     stp = StylesPart(pack, '/styles.xml', data=str(workbook.stylesheet))
     pack.add(stp)
     wbp.relate(stp)
@@ -23,8 +20,6 @@ def save(workbook, filename, stream=None):
     for i, worksheet in enumerate(workbook.sheets):
         wid = i + 1
         wsp = WorksheetPart(pack, "/worksheet%d.xml" % wid, data=str(worksheet))
-        ##print '------'
-        ##print worksheet
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
     pack.save(stream or filename)

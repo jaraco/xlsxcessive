@@ -2,13 +2,13 @@
 
 import io
 
-from xlsxcessive import xlsx
+from xlsxcessive import workbook, xlsx
 from xlsxcessive.worksheet import Cell
 
 
 class TestWhenSaving(object):
     def test_fairly_involved_save(self):
-        wb = xlsx.Workbook()
+        wb = workbook.Workbook()
 
         sheet = wb.new_sheet('Test Sheet')
 
