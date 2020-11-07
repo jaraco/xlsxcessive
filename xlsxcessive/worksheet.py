@@ -7,8 +7,6 @@ import string
 import datetime
 import numbers
 
-import six
-
 from xml.sax.saxutils import escape
 from xlsxcessive import markup
 from xlsxcessive.cache import CacheDecorator
@@ -286,10 +284,10 @@ class Cell:
                 self._is_time = True
                 self.value = self._serialize_time(value)
                 return
-        elif isinstance(value, six.string_types):
+        elif isinstance(value, str):
             self.cell_type = "inlineStr"
             value = escape(value)
-            if isinstance(value, six.text_type):
+            if isinstance(value, str):
                 value = value.encode('utf-8')
         elif isinstance(value, bytes):
             self.cell_type = "inlineStr"
