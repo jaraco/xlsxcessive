@@ -6,7 +6,11 @@ import operator
 import string
 import datetime
 import numbers
-from functools import singledispatchmethod
+
+try:
+    from functools import singledispatchmethod  # type: ignore
+except ImportError:
+    from singledispatchmethod import singledispatchmethod  # type: ignore
 
 from xml.sax.saxutils import escape
 from xlsxcessive import markup
