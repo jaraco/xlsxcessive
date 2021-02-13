@@ -6,6 +6,7 @@ import operator
 import string
 import datetime
 import numbers
+from functools import singledispatchmethod
 
 from xml.sax.saxutils import escape
 from xlsxcessive import markup
@@ -29,6 +30,54 @@ def _coords_to_a1_helper(coords):
 
     a1_col = num_to_a(coords[1] + 1)
     return "%s%d" % (a1_col, coords[0] + 1)
+
+
+class Formula:
+    def __init__(self, source, initial_value=None, shared=False, master=None):
+        self.source = source
+        self.initial_value = initial_value
+        self.shared = shared
+        self.master = master
+        self.index = None
+        self.refs = []
+        self._ref_str = ''
+
+    def share(self, cell):
+        self.refs.append(cell.reference)
+        if len(self.refs) == 1:
+            # This is the first cell that this formula is being applied to.
+            # Return it directly.
+            return self
+
+        # A new cell is referring to this formula. Return a shared version that
+        # points to this one as the master formula.
+        return Formula(None, shared=True, master=self)
+
+    @property
+    def _refs(self):
+        if self.shared and not self.master and not self._ref_str:
+            # sort alphabetically and then by length to ensure correct ordering
+            sc = sorted(self.refs)
+            sc = sorted(self.refs, key=len)
+            low, high = sc[0], sc[-1]
+            self._ref_str = "%s:%s" % (low, high)
+        return self._ref_str
+
+    def __str__(self):
+        if self.master is not None:
+            return '<f t="shared" si="%s" />' % self.master.index
+        attrs = filter(
+            None,
+            [
+                't="shared"' if self.shared else '',
+                'ref="%s"' % self._refs if self._refs else '',
+                'si="%d"' % self.master.index if self.master else '',
+                'si="%d"' % self.index if (self.shared and not self.master) else '',
+            ],
+        )
+        sattrs = " %s" % (" ".join(attrs)) if attrs else ''
+        ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
+        return '<f %s>%s</f>%s' % (sattrs, self.source, ival)
 
 
 class Worksheet:
@@ -264,41 +313,57 @@ class Cell:
 
     @value.setter
     def value(self, value):
-        date_types = datetime.date, datetime.time, datetime.datetime
-        is_numeric = isinstance(value, numbers.Number) or isinstance(value, date_types)
-        if is_numeric:
-            self.cell_type = "n"
-            if self.worksheet and self.worksheet.workbook.date1904:
-                base = 1904
-            else:
-                base = 1900
-            if isinstance(value, datetime.datetime):
-                self._is_datetime = True
-                self.value = self._serialize_datetime(value, base)
-                return
-            elif isinstance(value, datetime.date):
-                self._is_date = True
-                self.value = self._serialize_date(value, base)
-                return
-            elif isinstance(value, datetime.time):
-                self._is_time = True
-                self.value = self._serialize_time(value)
-                return
-        elif isinstance(value, str):
-            self.cell_type = "inlineStr"
-            value = escape(value)
-            if isinstance(value, str):
-                value = value.encode('utf-8')
-        elif isinstance(value, bytes):
-            self.cell_type = "inlineStr"
-        elif isinstance(value, Formula):
-            self.cell_type = 'str'
-            if value.shared:
-                value = value.share(self)
-        elif value is None:
-            pass
-        else:
-            raise ValueError("Unsupported cell value: %r" % value)
+        return self._set_value(value)
+
+    @singledispatchmethod
+    def _set_value(self, value):
+        raise ValueError("Unsupported cell value: %r" % value)
+
+    @_set_value.register(numbers.Number)
+    def _set_number(self, value):
+        self.cell_type = "n"
+        self._value = value
+
+    @_set_value.register(datetime.datetime)
+    def _set_datetime(self, value):
+        self._is_datetime = True
+        self.value = self._serialize_datetime(value)
+
+    def _date_base(self):
+        return 1904 if self.worksheet and self.worksheet.workbook.date1904 else 1900
+
+    @_set_value.register(datetime.date)
+    def _set_date(self, value):
+        self._is_date = True
+        self.value = self._serialize_date(value)
+
+    @_set_value.register(datetime.time)
+    def _set_time(self, value):
+        self._is_time = True
+        self.value = self._serialize_time(value)
+
+    @_set_value.register(str)
+    def _set_str(self, value):
+        self.cell_type = "inlineStr"
+        value = escape(value)
+        if isinstance(value, str):
+            value = value.encode('utf-8')
+        self._value = value
+
+    @_set_value.register(bytes)
+    def _set_bytes(self, value):
+        self.cell_type = "inlineStr"
+        self._value = value
+
+    @_set_value.register(Formula)
+    def _set_formula(self, value):
+        self.cell_type = 'str'
+        if value.shared:
+            value = value.share(self)
+        self._value = value
+
+    @_set_value.register(type(None))
+    def _set_none(self, value):
         self._value = value
 
     # Implementation of DATEVALUE to meet the requirements
@@ -323,7 +388,8 @@ class Cell:
     # DATEVALUE("01-Feb-2006") results in the serial value 37287.0000000...
     # DATEVALUE("31-Dec-9999") results in the serial value 2957003.0000000...
     #
-    def _serialize_date(self, dateobj, base=1900):
+    def _serialize_date(self, dateobj):
+        base = self._date_base()
         if base == 1900:
             if dateobj < datetime.date(1900, 3, 1):
                 delta = datetime.date(base, 1, 1) - datetime.timedelta(days=1)
@@ -421,51 +487,3 @@ class Cell:
             col += p * (charval + mod)
             mod = 1
         return row, col
-
-
-class Formula:
-    def __init__(self, source, initial_value=None, shared=False, master=None):
-        self.source = source
-        self.initial_value = initial_value
-        self.shared = shared
-        self.master = master
-        self.index = None
-        self.refs = []
-        self._ref_str = ''
-
-    def share(self, cell):
-        self.refs.append(cell.reference)
-        if len(self.refs) == 1:
-            # This is the first cell that this formula is being applied to.
-            # Return it directly.
-            return self
-
-        # A new cell is referring to this formula. Return a shared version that
-        # points to this one as the master formula.
-        return Formula(None, shared=True, master=self)
-
-    @property
-    def _refs(self):
-        if self.shared and not self.master and not self._ref_str:
-            # sort alphabetically and then by length to ensure correct ordering
-            sc = sorted(self.refs)
-            sc = sorted(self.refs, key=len)
-            low, high = sc[0], sc[-1]
-            self._ref_str = "%s:%s" % (low, high)
-        return self._ref_str
-
-    def __str__(self):
-        if self.master is not None:
-            return '<f t="shared" si="%s" />' % self.master.index
-        attrs = filter(
-            None,
-            [
-                't="shared"' if self.shared else '',
-                'ref="%s"' % self._refs if self._refs else '',
-                'si="%d"' % self.master.index if self.master else '',
-                'si="%d"' % self.index if (self.shared and not self.master) else '',
-            ],
-        )
-        sattrs = " %s" % (" ".join(attrs)) if attrs else ''
-        ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
-        return '<f %s>%s</f>%s' % (sattrs, self.source, ival)
