@@ -347,10 +347,7 @@ class Cell:
     @_set_value.register(str)
     def _set_str(self, value):
         self.cell_type = "inlineStr"
-        value = escape(value)
-        if isinstance(value, str):
-            value = value.encode('utf-8')
-        self._value = value
+        self._value = escape(value)
 
     @_set_value.register(bytes)
     def _set_bytes(self, value):

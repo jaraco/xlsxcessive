@@ -97,20 +97,19 @@ class TestCellValues:
     def test_string_values_are_escaped(self):
         c = Cell('A1', value="AT&T")
         actual = c.value
-        expected = b"AT&amp;T"
+        expected = "AT&amp;T"
         assert actual == expected
 
     def test_unicode_values_are_escaped(self):
-        c = Cell('A1', value=u"43\u00b0")
+        c = Cell('A1', value="43\u00b0")
         actual = c.value
-        # utf-8 encoded value
-        expected = b"43\xc2\xb0"
+        expected = "43\u00b0"
         assert actual == expected
 
     def test_already_encoded_strings_are_not_escaped(self):
-        c = Cell('A1', value=b"43\xc2\xb0")
+        c = Cell('A1', value="43\xc2\xb0")
         actual = c.value
-        expected = b"43\xc2\xb0"
+        expected = "43\xc2\xb0"
         assert actual == expected
 
 

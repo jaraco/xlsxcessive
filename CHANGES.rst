@@ -1,3 +1,8 @@
+v1.1.1
+======
+
+#1: Fixed improper encoding of cell text values.
+
 v1.1.0
 ======
 
