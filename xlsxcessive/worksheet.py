@@ -1,7 +1,5 @@
 """Classes that represent parts of an OOXML Worksheet."""
 
-from __future__ import division
-
 import operator
 import string
 import datetime
