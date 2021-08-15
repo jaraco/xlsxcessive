@@ -17,6 +17,9 @@
 .. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
 ..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://img.shields.io/badge/skeleton-2021-informational
+   :target: https://blog.jaraco.com/skeleton
+
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
 spreadsheets. It generates the XML so you don't have to and uses the openpack
 library by YouGov to wrap it up into an OOXML compatible ZIP file.
