@@ -21,8 +21,9 @@
    :target: https://blog.jaraco.com/skeleton
 
 XlsXcessive provides a Python API for writing Excel/OOXML compatible .xlsx
-spreadsheets. It generates the XML so you don't have to and uses the openpack
-library by YouGov to wrap it up into an OOXML compatible ZIP file.
+spreadsheets. It generates the XML and uses
+`openpack <https://pypi.org/project/openpack>`_
+to wrap it up into an OOXML compatible ZIP file.
 
 
 Creating a Workbook
@@ -48,7 +49,7 @@ from the workbook and require a name::
 Working With Cells
 ==================
 
-Once you have a worksheet you can add some cells to it.::
+Add some cells to the worksheet::
 
     sheet1.cell('A1', value='Hello, world')
     sheet1.cell('B1', value=7)
@@ -57,12 +58,12 @@ Once you have a worksheet you can add some cells to it.::
 
 Strings, integers, floats and decimals are supported.
 
-You can also add cells via row index and column index.::
+Add cells via row index and column index::
 
     sheet1.cell(coords=(0, 4), value="Added via row/col index")
 
-This is useful when iterating over data structures to populate a sheet with
-cells.
+This form of addressing is useful when iterating over data
+structures to populate a sheet with cells.
 
 
 Calculations With Formulas
@@ -70,9 +71,9 @@ Calculations With Formulas
 
 Cells can also contain formulas. Formulas are created with a string representing
 the formula code. You can optionally supply a precalcuated value and a
-``shared`` boolean flag if you wish to share the formula across a number of
+``shared`` boolean flag to share the formula across a number of
 cells. The first cell to reference a shared formula as its value is the master
-cell for the formula. Other cells may also reference the formula.::
+cell for the formula. Other cells may also reference the formula::
 
     formula = sheet1.formula('B1 + C1', shared=True)
     sheet1.cell('C2', formula) # master
@@ -82,18 +83,18 @@ cell for the formula. Other cells may also reference the formula.::
 Cells With Style
 ================
 
-The library contains basic support for styling cells. The first thing you do is
+The library contains basic support for styling cells. The first thing to do is
 create a style format. Style formats are shared on a stylesheet on the
-workbook.::
+workbook::
 
     bigfont = workbook.stylesheet.new_format()
     bigfont.font(size=24, bold=True)
 
-Once you have a style format you can apply it to cells.::
+Apply the format to cells::
 
     sheet1.cell('A2', 'HI', format=bigfont)
 
-Other supported style transformations include cell alignment and borders.::
+Other supported style transformations include cell alignment and borders::
 
     col_header = workbook.stylesheet.new_format()
     col_header.align('center')
@@ -104,7 +105,7 @@ Adjusting Column Width
 ======================
 
 It is possible to adjust column widths on a sheet. The column width is specified
-by either number or index.::
+by either number or index::
 
     # these are the same column
     sheet1.col(index=0, width=10)
@@ -117,7 +118,7 @@ Merging Cells
 =============
 
 Cells can be merged together.  The left-most cell in the merge range should
-contain the data.::
+contain the data::
 
     from xlsxcessive.worksheet import Cell
     a3 = sheet1.cell('A3', 'This is a lot of text to fit in a tiny cell')
@@ -128,7 +129,7 @@ Save Your Work
 ==============
 
 You can save the generated OOXML data to a local file or to an output file
-stream.::
+stream::
 
     # local file
     save(workbook, 'financials.xlsx')
