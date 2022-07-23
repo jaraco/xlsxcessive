@@ -474,7 +474,7 @@ class Cell:
         def _p():
             i = 0
             while True:
-                yield 26 ** i
+                yield 26**i
                 i += 1
 
         row = int(''.join(filter(str.isdigit, self._reference))) - 1
