@@ -1,3 +1,8 @@
+v1.1.2
+======
+
+Refreshed package.
+
 v1.1.1
 ======
 
