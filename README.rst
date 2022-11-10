@@ -1,10 +1,7 @@
 .. image:: https://img.shields.io/pypi/v/xlsxcessive.svg
-   :target: `PyPI link`_
+   :target: https://pypi.org/project/xlsxcessive
 
 .. image:: https://img.shields.io/pypi/pyversions/xlsxcessive.svg
-   :target: `PyPI link`_
-
-.. _PyPI link: https://pypi.org/project/xlsxcessive
 
 .. image:: https://github.com/jaraco/xlsxcessive/workflows/tests/badge.svg
    :target: https://github.com/jaraco/xlsxcessive/actions?query=workflow%3A%22tests%22
