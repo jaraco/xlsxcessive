@@ -3,7 +3,7 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/xlsxcessive.svg
 
-.. image:: https://github.com/jaraco/xlsxcessive/workflows/tests/badge.svg
+.. image:: https://github.com/jaraco/xlsxcessive/actions/workflows/main.yml/badge.svg
    :target: https://github.com/jaraco/xlsxcessive/actions?query=workflow%3A%22tests%22
    :alt: tests
 
