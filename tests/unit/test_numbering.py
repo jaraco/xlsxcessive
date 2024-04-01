@@ -2,7 +2,7 @@ from xlsxcessive.style import Stylesheet
 
 
 class TestStylesheetNumbering:
-    def setup(self):
+    def setup_method(self):
         self.styles = Stylesheet(None)
 
     def test_can_add_custom_number_format(self):
@@ -26,7 +26,7 @@ class TestStylesheetNumbering:
 
 
 class TestFormatNumbering:
-    def setup(self):
+    def setup_method(self):
         self.styles = Stylesheet(None)
         self.format = self.styles.new_format()
 
