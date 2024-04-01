@@ -11,7 +11,7 @@ Welcome to |project| documentation!
    history
 
 
-.. automodule:: PROJECT
+.. automodule:: xlsxcessive
     :members:
     :undoc-members:
     :show-inheritance:
