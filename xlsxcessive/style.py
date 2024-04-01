@@ -150,26 +150,20 @@ class Format:
     def __str__(self):
         attrs = []
         if self._font:
-            attrs.extend(
-                [
-                    'fontId="%d"' % self._font.index,
-                    'applyFont="1"',
-                ]
-            )
+            attrs.extend([
+                'fontId="%d"' % self._font.index,
+                'applyFont="1"',
+            ])
         if self._border:
-            attrs.extend(
-                [
-                    'borderId="%d"' % self._border.index,
-                    'applyBorder="1"',
-                ]
-            )
+            attrs.extend([
+                'borderId="%d"' % self._border.index,
+                'applyBorder="1"',
+            ])
         if self._number_format is not None:
-            attrs.extend(
-                [
-                    'numFmtId="%d"' % self._number_format,
-                    'applyNumberFormat="1"',
-                ]
-            )
+            attrs.extend([
+                'numFmtId="%d"' % self._number_format,
+                'applyNumberFormat="1"',
+            ])
         children = []
         if self._alignment:
             children.append('<alignment horizontal="%s"/>' % self._alignment)

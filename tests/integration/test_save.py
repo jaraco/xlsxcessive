@@ -72,7 +72,7 @@ class TestWhenSaving:
                 sheet.cell(coords=(rowidx, colidx), value=rowidx * colidx)
 
         # write unicode value
-        sheet.cell('G2', value=u"43\u00b0")
+        sheet.cell('G2', value="43\u00b0")
 
         output = io.BytesIO()
 

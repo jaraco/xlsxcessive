@@ -77,7 +77,7 @@ for rowidx in range(5, 10):
 sheet.col(number=2, width=5)
 
 # write unicode value
-sheet.cell('G2', value=u"43\u00b0")
+sheet.cell('G2', value="43\u00b0")
 
 if __name__ == '__main__':
     import os
