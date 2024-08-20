@@ -178,9 +178,9 @@ class Worksheet:
         else:
             cols = ''
         if merges:
-            merge_elems = []
-            for merge_range in merges:
-                merge_elems.append('<mergeCell ref="%s" />' % merge_range)
+            merge_elems = [
+                f'<mergeCell ref="{merge_range}" />' for merge_range in merges
+            ]
             merge_cells = '<mergeCells>%s</mergeCells>' % "".join(merge_elems)
         else:
             merge_cells = ''
