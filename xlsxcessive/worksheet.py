@@ -177,13 +177,9 @@ class Worksheet:
             cols = '<cols>%s</cols>' % cols_
         else:
             cols = ''
-        if merges:
-            merge_elems = [
-                f'<mergeCell ref="{merge_range}" />' for merge_range in merges
-            ]
-            merge_cells = '<mergeCells>%s</mergeCells>' % "".join(merge_elems)
-        else:
-            merge_cells = ''
+        merge_elems = [f'<mergeCell ref="{merge_range}" />' for merge_range in merges]
+        merge_cells = bool(merges) * f'<mergeCells>{"".join(merge_elems)}</mergeCells>'
+
         return markup.worksheet % {
             'rows': rows,
             'cols': cols,
