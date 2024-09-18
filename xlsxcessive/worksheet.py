@@ -1,16 +1,12 @@
 """Classes that represent parts of an OOXML Worksheet."""
 
-import operator
-import string
 import datetime
 import numbers
-
-try:
-    from functools import singledispatchmethod  # type: ignore
-except ImportError:
-    from singledispatchmethod import singledispatchmethod  # type: ignore
-
+import operator
+import string
+from functools import singledispatchmethod
 from xml.sax.saxutils import escape
+
 from xlsxcessive import markup
 from xlsxcessive.cache import CacheDecorator
 
