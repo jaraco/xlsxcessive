@@ -412,8 +412,8 @@ class Cell:
         return seconds / 86400
 
     # combination of DATEVALUE and TIMEVALUE
-    def _serialize_datetime(self, datetimeobj, base=1900):
-        date_float = float(self._serialize_date(datetimeobj.date(), base))
+    def _serialize_datetime(self, datetimeobj):
+        date_float = float(self._serialize_date(datetimeobj.date()))
         time_float = self._serialize_time(datetimeobj.time())
         return date_float + time_float
 
