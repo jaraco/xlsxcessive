@@ -1,9 +1,9 @@
 """Classes that represent parts of an OOXML Worksheet."""
 
-import operator
-import string
 import datetime
 import numbers
+import operator
+import string
 
 try:
     from functools import singledispatchmethod  # type: ignore
@@ -11,6 +11,7 @@ except ImportError:
     from singledispatchmethod import singledispatchmethod  # type: ignore
 
 from xml.sax.saxutils import escape
+
 from xlsxcessive import markup
 from xlsxcessive.cache import CacheDecorator
 
@@ -31,7 +32,7 @@ def _coords_to_a1_helper(coords):
             return num_to_a(n // 26) + num_to_a(n % 26 + 1)
 
     a1_col = num_to_a(coords[1] + 1)
-    return "%s%d" % (a1_col, coords[0] + 1)
+    return f"{a1_col}{coords[0] + 1}"
 
 
 class Formula:
@@ -62,24 +63,24 @@ class Formula:
             sc = sorted(self.refs)
             sc = sorted(self.refs, key=len)
             low, high = sc[0], sc[-1]
-            self._ref_str = "%s:%s" % (low, high)
+            self._ref_str = f"{low}:{high}"
         return self._ref_str
 
     def __str__(self):
         if self.master is not None:
-            return '<f t="shared" si="%s" />' % self.master.index
+            return f'<f t="shared" si="{self.master.index}" />'
         attrs = filter(
             None,
             [
                 't="shared"' if self.shared else '',
-                'ref="%s"' % self._refs if self._refs else '',
-                'si="%d"' % self.master.index if self.master else '',
-                'si="%d"' % self.index if (self.shared and not self.master) else '',
+                f'ref="{self._refs}"' if self._refs else '',
+                f'si="{self.master.index}"' if self.master else '',
+                f'si="{self.index}"' if (self.shared and not self.master) else '',
             ],
         )
-        sattrs = " %s" % (" ".join(attrs)) if attrs else ''
-        ival = '<v>%s</v>' % self.initial_value if self.initial_value else ''
-        return '<f %s>%s</f>%s' % (sattrs, self.source, ival)
+        sattrs = " {}".format(" ".join(attrs)) if attrs else ''
+        ival = f'<v>{self.initial_value}</v>' if self.initial_value else ''
+        return f'<f {sattrs}>{self.source}</f>{ival}'
 
 
 class Worksheet:
@@ -174,7 +175,7 @@ class Worksheet:
         rows = ''.join(rows)
         if self.cols:
             cols_ = ''.join(str(col) for col in self.cols)
-            cols = '<cols>%s</cols>' % cols_
+            cols = f'<cols>{cols_}</cols>'
         else:
             cols = ''
         merge_elems = [f'<mergeCell ref="{merge_range}" />' for merge_range in merges]
@@ -216,11 +217,11 @@ class Row:
             if c.merge_range:
                 self.merge_cells.append(c.merge_range)
         cells = ''.join(cells)
-        return '<row r="%s">%s</row>' % (self.number, cells)
+        return f'<row r="{self.number}">{cells}</row>'
 
 
 class Column:
-    __slots__ = 'width', 'number', 'best_fit', 'style'
+    __slots__ = 'best_fit', 'number', 'style', 'width'
 
     def __init__(self, worksheet, **params):
         for name, value in params.items():
@@ -266,16 +267,16 @@ class Column:
 
 class Cell:
     __slots__ = (
-        '_reference',
         '_coords',
-        'cell_type',
-        '_value',
         '_is_date',
         '_is_datetime',
         '_is_time',
-        'worksheet',
+        '_reference',
+        '_value',
+        'cell_type',
         'format',
         'merge_range',
+        'worksheet',
     )
 
     def __init__(
@@ -303,7 +304,7 @@ class Cell:
         return cls(coords=coords)
 
     def merge(self, other):
-        self.merge_range = "%s:%s" % (self.reference, other.reference)
+        self.merge_range = f"{self.reference}:{other.reference}"
 
     @property
     def value(self):
@@ -315,7 +316,7 @@ class Cell:
 
     @singledispatchmethod
     def _set_value(self, value):
-        raise ValueError("Unsupported cell value: %r" % value)
+        raise ValueError(f"Unsupported cell value: {value!r}")
 
     @_set_value.register(numbers.Number)
     def _set_number(self, value):
@@ -419,33 +420,33 @@ class Cell:
 
     def _format_value(self):
         if self.cell_type == 'inlineStr':
-            return "<is><t>%s</t></is>" % self.value
+            return f"<is><t>{self.value}</t></is>"
         elif self.cell_type == 'n':
-            return "<v>%s</v>" % self.value
+            return f"<v>{self.value}</v>"
         elif self.cell_type == 'str':
             return str(self.value)
 
     def __str__(self):
         attrs = [
-            'r="%s"' % self.reference,
-            't="%s"' % self.cell_type,
+            f'r="{self.reference}"',
+            f't="{self.cell_type}"',
         ]
         if self.format:
-            attrs.append('s="%d"' % self.format.index)
+            attrs.append(f's="{self.format.index}"')
         # if we don't have an explicit format and the
         # value is a date, datetime or time
         # then try to apply a default format to the cell
         elif self.worksheet:
             if self._is_date:
                 idx = self.worksheet.workbook.stylesheet.default_date_format.index
-                attrs.append('s="%d"' % idx)
+                attrs.append(f's="{idx}"')
             elif self._is_datetime:
                 idx = self.worksheet.workbook.stylesheet.default_datetime_format.index
-                attrs.append('s="%d"' % idx)
+                attrs.append(f's="{idx}"')
             elif self._is_time:
                 idx = self.worksheet.workbook.stylesheet.default_time_format.index
-                attrs.append('s="%d"' % idx)
-        return '<c %s>%s</c>' % (" ".join(attrs), self._format_value())
+                attrs.append(f's="{idx}"')
+        return '<c {}>{}</c>'.format(" ".join(attrs), self._format_value())
 
     @property
     def reference(self):

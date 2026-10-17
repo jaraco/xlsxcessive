@@ -82,6 +82,7 @@ sheet.cell('G2', value="43\u00b0")
 if __name__ == '__main__':
     import os
     import sys
+
     from xlsxcessive.xlsx import save
 
     if len(sys.argv) == 1:

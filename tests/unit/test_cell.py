@@ -1,9 +1,9 @@
 import datetime
 
-from xlsxcessive.worksheet import Cell
 from xlsxcessive.workbook import (
     Workbook,
 )  # used for testing date conversions based to 1904
+from xlsxcessive.worksheet import Cell
 
 # the ADDRESS function in Excel is useful for getting correct values to work from
 # for these tests.

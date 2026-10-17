@@ -13,7 +13,7 @@ class Workbook:
 
     def new_sheet(self, name):
         sid = len(self.sheets) + 1
-        sheet = Worksheet(self, name, sid, "rId%d" % sid)
+        sheet = Worksheet(self, name, sid, f"rId{sid}")
         self.sheets.append(sheet)
         return sheet
 

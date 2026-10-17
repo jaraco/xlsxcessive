@@ -1,10 +1,10 @@
-import io
-import cherrypy
 import decimal
+import io
 
-from xlsxcessive.xlsx import save
+import cherrypy
+
 from xlsxcessive.workbook import Workbook
-
+from xlsxcessive.xlsx import save
 
 XLSX_CT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 HOMEPAGE_HTML = """\
@@ -140,7 +140,7 @@ class Demo:
         sheet = workbook.new_sheet('Demo Sheet')
         for row in range(1, 5):
             for col in 'ABCD':
-                ref = '%s%d' % (col, row)
+                ref = f'{col}{row}'
                 data = cells.get(ref, '').strip()
                 if data:
                     value = self._infer_value(data, sheet)

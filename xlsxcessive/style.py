@@ -1,7 +1,7 @@
+from typing import ClassVar
 from xml.sax.saxutils import escape
 
-from xlsxcessive import markup
-from xlsxcessive import errors
+from xlsxcessive import errors, markup
 
 
 class Stylesheet:
@@ -63,21 +63,21 @@ class Stylesheet:
             fcount = len(self.custom_numbers)
             fxml = ""
             for fcode, fid in self.custom_numbers.items():
-                nf = '<numFmt numFmtId="%d" formatCode="%s"/>\n' % (fid, fcode)
+                nf = f'<numFmt numFmtId="{fid}" formatCode="{fcode}"/>\n'
                 fxml += nf
-            numfmts = '<numFmts count="%d">%s</numFmts>' % (fcount, fxml)
+            numfmts = f'<numFmts count="{fcount}">{fxml}</numFmts>'
         if self.fonts:
             fxml = "\n".join(str(f) for f in self.fonts)
             fcount = len(self.fonts)
-            fonts = '<fonts count="%d">%s</fonts>' % (fcount, fxml)
+            fonts = f'<fonts count="{fcount}">{fxml}</fonts>'
         if self.formats:
             fxml = "\n".join(str(f) for f in self.formats)
             fcount = len(self.formats)
-            formats = '<cellXfs count="%d">%s</cellXfs>' % (fcount, fxml)
+            formats = f'<cellXfs count="{fcount}">{fxml}</cellXfs>'
         if self.borders:
             bxml = "\n".join(str(b) for b in self.borders)
             bcount = len(self.borders)
-            borders = '<borders count="%d">%s</borders>' % (bcount, bxml)
+            borders = f'<borders count="{bcount}">{bxml}</borders>'
         return markup.stylesheet % {
             'numfmts': numfmts,
             'fonts': fonts,
@@ -87,7 +87,7 @@ class Stylesheet:
 
 
 class Format:
-    VALID_ALIGNMENTS = [
+    VALID_ALIGNMENTS: ClassVar = [
         'center',
         'centerContinuous',
         'distributed',
@@ -98,7 +98,7 @@ class Format:
         'right',
     ]
 
-    COMMON_NUM_FORMATS = {
+    COMMON_NUM_FORMATS: ClassVar = {
         '0': 1,
         '0.00': 2,
         '#,000': 3,
@@ -132,7 +132,7 @@ class Format:
 
     def align(self, value):
         if value not in self.VALID_ALIGNMENTS:
-            msg = "%r is not a valid alignment value." % value
+            msg = f"{value!r} is not a valid alignment value."
             raise errors.XlsxFormatError(msg)
         self._alignment = value
 
@@ -151,26 +151,26 @@ class Format:
         attrs = []
         if self._font:
             attrs.extend([
-                'fontId="%d"' % self._font.index,
+                f'fontId="{self._font.index}"',
                 'applyFont="1"',
             ])
         if self._border:
             attrs.extend([
-                'borderId="%d"' % self._border.index,
+                f'borderId="{self._border.index}"',
                 'applyBorder="1"',
             ])
         if self._number_format is not None:
             attrs.extend([
-                'numFmtId="%d"' % self._number_format,
+                f'numFmtId="{self._number_format}"',
                 'applyNumberFormat="1"',
             ])
         children = []
         if self._alignment:
-            children.append('<alignment horizontal="%s"/>' % self._alignment)
+            children.append(f'<alignment horizontal="{self._alignment}"/>')
         if not children:
-            return '<xf %s/>' % (" ".join(attrs))
+            return '<xf {}/>'.format(" ".join(attrs))
         else:
-            return '<xf %s>%s</xf>' % (" ".join(attrs), "".join(children))
+            return '<xf {}>{}</xf>'.format(" ".join(attrs), "".join(children))
 
 
 class Font:
@@ -186,19 +186,19 @@ class Font:
 
     def __str__(self):
         elems = [
-            '<sz val="%d"/>' % self.size if self.size else '',
-            '<name val="%s"/>' % self.name if self.name else '',
-            '<family val="%d"/>' % self.family if self.family else '',
-            '<color rgb="%s"/>' % self.color if self.color else '',
+            f'<sz val="{int(self.size)}"/>' if self.size else '',
+            f'<name val="{self.name}"/>' if self.name else '',
+            f'<family val="{int(self.family)}"/>' if self.family else '',
+            f'<color rgb="{self.color}"/>' if self.color else '',
             '<b/>' if self.bold else '',
             '<i/>' if self.italic else '',
             '<u/>' if self.underline else '',
         ]
-        return '<font>%s</font>' % (" ".join(filter(None, elems)))
+        return '<font>{}</font>'.format(" ".join(filter(None, elems)))
 
 
 class Border:
-    VALID_BORDERS = [
+    VALID_BORDERS: ClassVar = [
         'dashDot',
         'dashDotDot',
         'dashed',
@@ -226,18 +226,18 @@ class Border:
 
     def _validate_border(self, border):
         if border is not None and border not in self.VALID_BORDERS:
-            msg = "%r is not a valid border style." % border
+            msg = f"{border!r} is not a valid border style."
             raise errors.XlsxFormatError(msg)
 
     def __str__(self):
         children = []
         # this exact order (left, right, top, bottom) is important to Excel
         if self.left:
-            children.append('<left style="%s" />' % self.left)
+            children.append(f'<left style="{self.left}" />')
         if self.right:
-            children.append('<right style="%s" />' % self.right)
+            children.append(f'<right style="{self.right}" />')
         if self.top:
-            children.append('<top style="%s" />' % self.top)
+            children.append(f'<top style="{self.top}" />')
         if self.bottom:
-            children.append('<bottom style="%s" />' % self.bottom)
-        return '<border>%s</border>' % ("".join(children))
+            children.append(f'<bottom style="{self.bottom}" />')
+        return '<border>{}</border>'.format("".join(children))

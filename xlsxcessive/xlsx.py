@@ -1,5 +1,6 @@
-from xlsxcessive.parts import WorkbookPart, WorksheetPart, StylesPart
 from openpack.officepack import OfficePackage
+
+from xlsxcessive.parts import StylesPart, WorkbookPart, WorksheetPart
 
 
 def save(workbook, filename, stream=None):
@@ -19,7 +20,7 @@ def save(workbook, filename, stream=None):
 
     for i, worksheet in enumerate(workbook.sheets):
         wid = i + 1
-        wsp = WorksheetPart(pack, "/worksheet%d.xml" % wid, data=str(worksheet))
+        wsp = WorksheetPart(pack, f"/worksheet{wid}.xml", data=str(worksheet))
         pack.add(wsp)
         wbp.relate(wsp, id=worksheet.relation_id)
     pack.save(stream or filename)
