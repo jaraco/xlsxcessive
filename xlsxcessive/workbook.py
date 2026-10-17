@@ -1,5 +1,5 @@
 from xlsxcessive import markup
-from xlsxcessive.style import Stylesheet, Format
+from xlsxcessive.style import Stylesheet
 from xlsxcessive.worksheet import Worksheet
 
 
@@ -18,7 +18,7 @@ class Workbook:
         return sheet
 
     def new_format(self):
-        return Format(self)
+        return self.stylesheet.new_format()
 
     def __str__(self):
         sheet_references = "".join(s.ref for s in self.sheets)
